@@ -10,8 +10,8 @@ namespace WebApi.Controllers;
 public class ProductController(IMediator mediator, ILogger<ProductController> logger) : Controller
 {
     [HttpGet]
-    [Authorize(Roles = "Base")]
-    [Route("getallproductsbytype")]
+    [Authorize(Roles = "GetProducts")]
+    [Route("GetAllProductsByType")]
     public async Task<IActionResult> GetAllProductsByType(string type)
     {
         logger.LogInformation($"Calling {nameof(this.GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");

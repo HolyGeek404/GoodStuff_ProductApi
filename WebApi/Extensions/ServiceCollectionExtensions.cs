@@ -26,7 +26,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddAzureConfig(this IServiceCollection services, IConfigurationManager configuration)
     {
         var azureAd = configuration.GetSection("AzureAd");
-
         configuration.AddAzureKeyVault(new Uri(azureAd["KvUrl"]), new DefaultAzureCredential());
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(azureAd);
@@ -50,7 +49,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GoodStuff WebApi Swagger", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GoodStuff Product Api Swagger", Version = "v1" });
                 c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
                     Description = "OAuth2.0 Auth Code with PKCE",
