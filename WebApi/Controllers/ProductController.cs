@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Features.Product.Queries.GetAllProductsByType;
+using Model.Features.Product.Queries.GetProductById;
 
 namespace WebApi.Controllers;
 
@@ -19,11 +20,30 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
         if (string.IsNullOrEmpty(type))
             return BadRequest("Product type cannot be null or empty.");
 
-        var products = await mediator.Send(new GetAllProductsByTypeQuery{Type = type.ToUpper()});
+        var products = await mediator.Send(new GetAllProductsByTypeQuery { Type = type.ToUpper() });
         if (products == null)
             return NotFound($"No products found for type: {type}");
 
         logger.LogInformation($"Successfully called {nameof(this.GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
+
+        return new JsonResult(products);
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "GetSingleProduct")]
+    [Route("GetProductById")]
+    public async Task<IActionResult> GetProductById(string type, int id)
+    {
+        logger.LogInformation($"Calling {nameof(this.GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
+
+        if (string.IsNullOrEmpty(type) || id <= 0)
+            return BadRequest("Product type or id is invalid.");
+
+        var products = await mediator.Send(new GetProductByIdQuery { Type = type.ToUpper(), Id = id });
+        if (products == null)
+            return NotFound($"No product found for type: {type} and id: {id}");
+
+        logger.LogInformation($"Successfully called {nameof(this.GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
 
         return new JsonResult(products);
     }
