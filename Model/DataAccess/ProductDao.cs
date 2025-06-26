@@ -28,7 +28,7 @@ public class ProductDao(CosmosClient cosmosClient) : IProductDao
         return await Get(query, queryOptions);
     }
 
-    public async Task<object?> GetProductByIdQuery(string type, int id)
+    public async Task<object?> GetProductByIdQuery(string type, string id)
     {
         var query = QueryBuilder.SelectSingleProductById(type, id);
         var queryOptions = new QueryRequestOptions

@@ -32,11 +32,11 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpGet]
     [Authorize(Roles = "GetSingleProduct")]
     [Route("GetProductById")]
-    public async Task<IActionResult> GetProductById(string type, int id)
+    public async Task<IActionResult> GetProductById(string type, string id)
     {
         logger.LogInformation($"Calling {nameof(this.GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
 
-        if (string.IsNullOrEmpty(type) || id <= 0)
+        if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(id))
             return BadRequest("Product type or id is invalid.");
 
         var products = await mediator.Send(new GetProductByIdQuery { Type = type.ToUpper(), Id = id });

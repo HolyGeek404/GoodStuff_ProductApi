@@ -10,8 +10,8 @@ public static class QueryBuilder
         return new QueryDefinition(Queries.GetAllByType(type)).WithParameter("@category", type);
     }
 
-    public static QueryDefinition SelectSingleProductById(string type, int id)
+    public static QueryDefinition SelectSingleProductById(string type, string id)
     {
-        return new QueryDefinition(Queries.GetSingleById()).WithParameter("@category", type).WithParameter("@id",id);
+        return new QueryDefinition(Queries.GetSingleById(type)).WithParameter("@category", type).WithParameter("@id",id);
     }
 }
