@@ -17,14 +17,15 @@ public static class Queries
 
     #region Cpu
     private static readonly string GetAllCpusExtension = "c.Socket, c.Architecture, c.TDP";
-    private static readonly string GetAllCpus = $"SELECT {BasicColumns} {GetAllCpusExtension} {BasicCategoryFrom}";
+    private static readonly string GetAllCpusFilterExtension = "c.Litography";
+    private static readonly string GetAllCpus = $"SELECT {BasicColumns}, {GetAllCpusExtension}, {GetAllCpusFilterExtension} {BasicCategoryFrom}";
     private static readonly string GetSingleCpu = $"SELECT {BasicColumns} {GetAllCpusExtension}, c.Familiy, c.Series, c.SupportedChipsets, c.RecomendedChipset, c.Frequency, c.Cores, c.Threads, c.UnlockedMultipler, c.CacheMemory, c.IntegredGpu, c.IntegredGpuModel, c.SupportedRam, c.Litography, c.AdditionalInfo, c.IncludedCooler, c.Warranty {BasicCategoryFromWithProductId}";
     #endregion
 
     #region Cooler
     private static readonly string GetAllCoolersExtension = "c.Fans, c.RPMControll, c.Compatibility, c.HeatPipes";
-    private static readonly string GetAllCoolers = $"SELECT {BasicColumns} {GetAllCoolersExtension} {BasicCategoryFrom}";
-    private static readonly string GetSingleCooler = $"SELECT {BasicColumns} {GetAllCoolersExtension}, c.CoolerType, c.Size, c.RMP, c.BearingType, c.FanSize, c.Connector, c.SupplyVoltage, c.SupplyCurrent, c.Highlight, c.MTBFLifetime, c.Height, c.Width, c.Depth, c.Weight, c.Warranty, c.ProducentCode, c.Manufacture {BasicCategoryFromWithProductId}";
+    private static readonly string GetAllCoolers = $"SELECT {BasicColumns}, {GetAllCoolersExtension} {BasicCategoryFrom}";
+    private static readonly string GetSingleCooler = $"SELECT {BasicColumns}, {GetAllCoolersExtension}, c.CoolerType, c.Size, c.RMP, c.BearingType, c.FanSize, c.Connector, c.SupplyVoltage, c.SupplyCurrent, c.Highlight, c.MTBFLifetime, c.Height, c.Width, c.Depth, c.Weight, c.Warranty, c.ProducentCode, c.Manufacture {BasicCategoryFromWithProductId}";
     #endregion
 
     public static string GetAllByType(string type)
