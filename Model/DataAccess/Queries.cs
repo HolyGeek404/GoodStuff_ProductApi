@@ -3,15 +3,16 @@ namespace Model.DataAccess;
 public static class Queries
 {
     #region Basic
-    private static readonly string BasicColumns = "c.Category, c.ProductId, c.ProductImg, c.Name, c.Price,";
+    private static readonly string BasicColumns = "c.Category, c.ProductId, c.ProductImg, c.Name, c.Price, c.Team";
     private static readonly string BasicCategoryFrom = "FROM c WHERE c.Category = @category";
     private static readonly string BasicCategoryFromWithProductId = $"{BasicCategoryFrom} AND c.ProductId = @id";
     #endregion  
 
     #region Gpu
     private static readonly string GetAllGpusExtension = "c.RecommendedPSUPower, c.MemoryBus, c.CoreRatio";
-    private static readonly string GetAllGpus = $"SELECT {BasicColumns} {GetAllGpusExtension} {BasicCategoryFrom}";
-    private static readonly string GetSingleGpu = $"SELECT {BasicColumns} {GetAllGpusExtension}, c.GpuProcessorLine, c.PCIeCategory, c.MemorySize, c.MemoryCategory, c.MemoryRatio, c.CoresNumber, c.CoolingCategory, c.OutputsCategory, c.SupportedLibraries, c.PowerConnector, c.Length, c.Width, c.Height, c.Warranty, c.ProducentCode, c.PgpCode, c.GpuProcessorName, c.Manufacturer {BasicCategoryFromWithProductId}";
+    private static readonly string GetAllGpusFilterExtension = "c.Manufacturer, c.MemorySize, c.MemoryType, c.GpuProcessorName";
+    private static readonly string GetAllGpus = $"SELECT {BasicColumns}, {GetAllGpusExtension}, {GetAllGpusFilterExtension} {BasicCategoryFrom}";
+    private static readonly string GetSingleGpu = $"SELECT {BasicColumns} {GetAllGpusExtension}, c.GpuProcessorLine, c.PCIeCategory, c.MemoryRatio, c.CoresNumber, c.CoolingCategory, c.OutputsCategory, c.SupportedLibraries, c.PowerConnector, c.Length, c.Width, c.Height, c.Warranty, c.ProducentCode, c.PgpCode {BasicCategoryFromWithProductId}";
     #endregion
 
     #region Cpu
