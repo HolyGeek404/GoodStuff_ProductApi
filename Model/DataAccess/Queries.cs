@@ -12,14 +12,14 @@ public static class Queries
     private static readonly string GetAllGpusExtension = "c.RecommendedPSUPower, c.MemoryBus, c.CoreRatio";
     private static readonly string GetAllGpusFilterExtension = "c.Manufacturer, c.MemorySize, c.MemoryType, c.GpuProcessorName";
     private static readonly string GetAllGpus = $"SELECT {BasicColumns}, {GetAllGpusExtension}, {GetAllGpusFilterExtension} {BasicCategoryFrom}";
-    private static readonly string GetSingleGpu = $"SELECT {BasicColumns} {GetAllGpusExtension}, c.GpuProcessorLine, c.PCIeCategory, c.MemoryRatio, c.CoresNumber, c.CoolingCategory, c.OutputsCategory, c.SupportedLibraries, c.PowerConnector, c.Length, c.Width, c.Height, c.Warranty, c.ProducentCode, c.PgpCode {BasicCategoryFromWithProductId}";
+    private static readonly string GetSingleGpu = $"SELECT {BasicColumns}, {GetAllGpusExtension}, c.GpuProcessorLine, c.PCIeCategory, c.MemoryRatio, c.CoresNumber, c.CoolingCategory, c.OutputsCategory, c.SupportedLibraries, c.PowerConnector, c.Length, c.Width, c.Height, c.Warranty, c.ProducentCode, c.PgpCode {BasicCategoryFromWithProductId}";
     #endregion
 
     #region Cpu
     private static readonly string GetAllCpusExtension = "c.Socket, c.Architecture, c.TDP";
     private static readonly string GetAllCpusFilterExtension = "c.Litography";
     private static readonly string GetAllCpus = $"SELECT {BasicColumns}, {GetAllCpusExtension}, {GetAllCpusFilterExtension} {BasicCategoryFrom}";
-    private static readonly string GetSingleCpu = $"SELECT {BasicColumns} {GetAllCpusExtension}, c.Familiy, c.Series, c.SupportedChipsets, c.RecomendedChipset, c.Frequency, c.Cores, c.Threads, c.UnlockedMultipler, c.CacheMemory, c.IntegredGpu, c.IntegredGpuModel, c.SupportedRam, c.Litography, c.AdditionalInfo, c.IncludedCooler, c.Warranty {BasicCategoryFromWithProductId}";
+    private static readonly string GetSingleCpu = $"SELECT {BasicColumns}, {GetAllCpusExtension}, c.Familiy, c.Series, c.SupportedChipsets, c.RecomendedChipset, c.Frequency, c.Cores, c.Threads, c.UnlockedMultipler, c.CacheMemory, c.IntegredGpu, c.IntegredGpuModel, c.SupportedRam, c.Litography, c.AdditionalInfo, c.IncludedCooler, c.Warranty {BasicCategoryFromWithProductId}";
     #endregion
 
     #region Cooler
