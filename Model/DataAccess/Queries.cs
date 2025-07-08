@@ -11,7 +11,7 @@ public static class Queries
     #region Gpu
     private static readonly string GetAllGpusExtension = "c.RecommendedPSUPower, c.MemoryBus, c.CoreRatio";
     private static readonly string GetAllGpus = $"SELECT {BasicColumns} {GetAllGpusExtension} {BasicCategoryFrom}";
-    private static readonly string GetSingleGpu = $"SELECT {BasicColumns} {GetAllGpusExtension} c.GpuProcessorLine, c.PCIeCategory, c.MemorySize, c.MemoryCategory, c.MemoryRatio, c.CoresNumber, c.CoolingCategory, c.OutputsCategory, c.SupportedLibraries, c.PowerConnector, c.Length, c.Width, c.Height, c.Warranty, c.ProducentCode, c.PgpCode, c.GpuProcessorName, c.Manufacturer, c.ProductImg {BasicCategoryFromWithProductId}";
+    private static readonly string GetSingleGpu = $"SELECT {BasicColumns} {GetAllGpusExtension}, c.GpuProcessorLine, c.PCIeCategory, c.MemorySize, c.MemoryCategory, c.MemoryRatio, c.CoresNumber, c.CoolingCategory, c.OutputsCategory, c.SupportedLibraries, c.PowerConnector, c.Length, c.Width, c.Height, c.Warranty, c.ProducentCode, c.PgpCode, c.GpuProcessorName, c.Manufacturer {BasicCategoryFromWithProductId}";
     #endregion
 
     #region Cpu
@@ -23,7 +23,7 @@ public static class Queries
     #region Cooler
     private static readonly string GetAllCoolersExtension = "c.Fans, c.RPMControll, c.Compatibility, c.HeatPipes";
     private static readonly string GetAllCoolers = $"SELECT {BasicColumns} {GetAllCoolersExtension} {BasicCategoryFrom}";
-    private static readonly string GetSingleCooler = $"SELECT {BasicColumns} {GetAllCoolersExtension}, c.CoolerType, c.Compatibility, c.Size, c.HeatPipes, c.Fans, c.RPMControll, c.RMP, c.BearingType, c.FanSize, c.Connector, c.SupplyVoltage, c.SupplyCurrent, c.Highlight, c.MTBFLifetime, c.Height, c.Width, c.Depth, c.Weight, c.Warranty, c.ProducentCode, c.Manufacture, {BasicCategoryFromWithProductId}";
+    private static readonly string GetSingleCooler = $"SELECT {BasicColumns} {GetAllCoolersExtension}, c.CoolerType, c.Size, c.RMP, c.BearingType, c.FanSize, c.Connector, c.SupplyVoltage, c.SupplyCurrent, c.Highlight, c.MTBFLifetime, c.Height, c.Width, c.Depth, c.Weight, c.Warranty, c.ProducentCode, c.Manufacture {BasicCategoryFromWithProductId}";
     #endregion
 
     public static string GetAllByType(string type)
