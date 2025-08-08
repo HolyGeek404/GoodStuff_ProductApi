@@ -1,24 +1,34 @@
+using Autofac;
 using Azure.Identity;
+using GoodStuff_DomainModels.Models.Products;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using Model.DataAccess;
+using Model.Services;
 
 namespace WebApi.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServices(this IServiceCollection services)
+    public static IServiceCollection AddServices(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        services.AddScoped<IProductDao, ProductDao>();
-
+        services.AddTransient<IProductDaoFactory,  ProductDaoFactory>();
+        
+        builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+        {
+            containerBuilder.RegisterType<GpuDao>().Keyed<IProductDao>("GPU");
+            containerBuilder.RegisterType<CpuDao>().Keyed<IProductDao>("CPU");
+            containerBuilder.RegisterType<CoolerDao>().Keyed<IProductDao>("COOLER");
+        });
+        
         return services;
     }
 
     public static IServiceCollection AddMediatRConfig(this IServiceCollection services)
     {
-        services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(ProductDao).Assembly));
+        services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(BaseProductDao).Assembly));
 
         return services;
     }
