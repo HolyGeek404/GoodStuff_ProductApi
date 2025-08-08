@@ -1,8 +1,9 @@
+using Autofac.Extensions.DependencyInjection;
 using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddServices();
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Services.AddServices(builder);
 builder.Services.AddMediatRConfig();
 builder.Services.AddAzureConfig(builder.Configuration);
 builder.Services.AddDataBaseConfig(builder.Configuration);

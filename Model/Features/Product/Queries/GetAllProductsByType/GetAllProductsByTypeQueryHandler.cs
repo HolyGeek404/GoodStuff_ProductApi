@@ -1,12 +1,13 @@
 ﻿using MediatR;
-using Model.DataAccess;
+using Model.Services;
 
 namespace Model.Features.Product.Queries.GetAllProductsByType;
 
-public class GetAllProductsByTypeQueryHandler(IProductDao productDao) : IRequestHandler<GetAllProductsByTypeQuery, object?>
+public class GetAllProductsByTypeQueryHandler(IProductDaoFactory daoFactory) : IRequestHandler<GetAllProductsByTypeQuery, object?>
 {
     public Task<object?> Handle(GetAllProductsByTypeQuery request, CancellationToken cancellationToken)
     {
-        return productDao.GetAllProductsByType(request.Type);
+        var dao = daoFactory.GetProductDao(request.Type);
+        return dao == null ? Task.FromResult<object?>(null) : dao.GetAllProductsByType(request.Type);
     }
 }
