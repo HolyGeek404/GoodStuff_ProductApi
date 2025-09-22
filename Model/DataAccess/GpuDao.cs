@@ -9,12 +9,12 @@ public class GpuDao(CosmosClient cosmosClient) : BaseProductDao(cosmosClient), I
     public async Task<object?> GetAllProductsByType(string type)
     {
         var query = QueryBuilder.SelectAllProductsByType(type);
-        return await GetList<Gpu>(query, type);
+        return await GetList<GpuModel>(query, type);
     }
 
     public async Task<object?> GetProductByIdQuery(string type, string id)
     {
         var query = QueryBuilder.SelectSingleProductById(type, id);
-        return await Get<Gpu>(query, type);
+        return await Get<GpuModel>(query, type);
     }
 }
