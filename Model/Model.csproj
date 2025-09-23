@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="GoodStuff_DomainModels" Version="1.0.5" />
-    <PackageReference Include="MediatR" Version="13.0.0" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.53.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="GoodStuff_DomainModels" Version="1.0.5"/>
+        <PackageReference Include="MediatR" Version="13.0.0"/>
+        <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.53.1"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\..\..\.nuget\packages\autofac\8.4.0\lib\net8.0\Autofac.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+    <ItemGroup>
+        <Reference Include="Autofac">
+            <HintPath>..\..\..\.nuget\packages\autofac\8.4.0\lib\net8.0\Autofac.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 
 </Project>

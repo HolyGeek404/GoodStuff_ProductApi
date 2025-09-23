@@ -3,7 +3,8 @@ using Model.Services;
 
 namespace Model.Features.Product.Queries.GetAllProductsByType;
 
-public class GetAllProductsByTypeQueryHandler(IProductDaoFactory daoFactory) : IRequestHandler<GetAllProductsByTypeQuery, object?>
+public class GetAllProductsByTypeQueryHandler(IProductDaoFactory daoFactory)
+    : IRequestHandler<GetAllProductsByTypeQuery, object?>
 {
     public Task<object?> Handle(GetAllProductsByTypeQuery request, CancellationToken cancellationToken)
     {

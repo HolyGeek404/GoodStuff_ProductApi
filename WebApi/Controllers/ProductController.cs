@@ -16,13 +16,15 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [Route("GetAllProductsByType")]
     public async Task<IActionResult> GetAllProductsByType(ProductCategories type)
     {
-        logger.LogInformation($"Calling {nameof(this.GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
+        logger.LogInformation(
+            $"Calling {nameof(GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
 
         var products = await mediator.Send(new GetAllProductsByTypeQuery { Type = type });
         if (products == null)
             return NotFound($"No products found for type: {type}");
 
-        logger.LogInformation($"Successfully called {nameof(this.GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
+        logger.LogInformation(
+            $"Successfully called {nameof(GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
 
         return new JsonResult(products);
     }
@@ -32,7 +34,8 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [Route("GetProductById")]
     public async Task<IActionResult> GetProductById(ProductCategories type, string id)
     {
-        logger.LogInformation($"Calling {nameof(this.GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
+        logger.LogInformation(
+            $"Calling {nameof(GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
 
         if (string.IsNullOrEmpty(id))
             return BadRequest("Product id cannot be empty.");
@@ -41,7 +44,8 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
         if (products == null)
             return NotFound($"No product found for type: {type} and id: {id}");
 
-        logger.LogInformation($"Successfully called {nameof(this.GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
+        logger.LogInformation(
+            $"Successfully called {nameof(GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
 
         return new JsonResult(products);
     }
