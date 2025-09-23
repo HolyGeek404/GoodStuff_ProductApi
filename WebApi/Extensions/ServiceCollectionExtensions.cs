@@ -1,5 +1,6 @@
 using Autofac;
 using Azure.Identity;
+using GoodStuff_DomainModels.Models.Enums;
 using GoodStuff_DomainModels.Models.Products;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
@@ -18,9 +19,9 @@ public static class ServiceCollectionExtensions
         
         builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
         {
-            containerBuilder.RegisterType<GpuDao>().Keyed<IProductDao>("GPU");
-            containerBuilder.RegisterType<CpuDao>().Keyed<IProductDao>("CPU");
-            containerBuilder.RegisterType<CoolerDao>().Keyed<IProductDao>("COOLER");
+            containerBuilder.RegisterType<GpuDao>().Keyed<IProductDao>(ProductCategories.Gpu);
+            containerBuilder.RegisterType<CpuDao>().Keyed<IProductDao>(ProductCategories.Cpu);
+            containerBuilder.RegisterType<CoolerDao>().Keyed<IProductDao>(ProductCategories.Cooler);
         });
         
         return services;
