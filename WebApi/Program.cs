@@ -15,13 +15,13 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "GoodStuff Product Api v1");
-    c.OAuthClientId(builder.Configuration["Swagger:SwaggerClientId"]);
-    c.OAuthUsePkce();
-    c.OAuthScopeSeparator(" ");
-}
-    );
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "GoodStuff Product Api v1");
+        c.OAuthClientId(builder.Configuration["Swagger:SwaggerClientId"]);
+        c.OAuthUsePkce();
+        c.OAuthScopeSeparator(" ");
+    }
+);
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

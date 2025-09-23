@@ -1,3 +1,4 @@
+using GoodStuff_DomainModels.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,18 +14,17 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpGet]
     [Authorize(Roles = "GetProducts")]
     [Route("GetAllProductsByType")]
-    public async Task<IActionResult> GetAllProductsByType(string type)
+    public async Task<IActionResult> GetAllProductsByType(ProductCategories type)
     {
-        logger.LogInformation($"Calling {nameof(this.GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
+        logger.LogInformation(
+            $"Calling {nameof(GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
 
-        if (string.IsNullOrEmpty(type))
-            return BadRequest("Product type cannot be null or empty.");
-
-        var products = await mediator.Send(new GetAllProductsByTypeQuery { Type = type.ToUpper() });
+        var products = await mediator.Send(new GetAllProductsByTypeQuery { Type = type });
         if (products == null)
             return NotFound($"No products found for type: {type}");
 
-        logger.LogInformation($"Successfully called {nameof(this.GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
+        logger.LogInformation(
+            $"Successfully called {nameof(GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
 
         return new JsonResult(products);
     }
@@ -32,18 +32,20 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpGet]
     [Authorize(Roles = "GetSingleProduct")]
     [Route("GetProductById")]
-    public async Task<IActionResult> GetProductById(string type, string id)
+    public async Task<IActionResult> GetProductById(ProductCategories type, string id)
     {
-        logger.LogInformation($"Calling {nameof(this.GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
+        logger.LogInformation(
+            $"Calling {nameof(GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
 
-        if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(id))
-            return BadRequest("Product type or id is invalid.");
+        if (string.IsNullOrEmpty(id))
+            return BadRequest("Product id cannot be empty.");
 
-        var products = await mediator.Send(new GetProductByIdQuery { Type = type.ToUpper(), Id = id });
+        var products = await mediator.Send(new GetProductByIdQuery { Type = type, Id = id });
         if (products == null)
             return NotFound($"No product found for type: {type} and id: {id}");
 
-        logger.LogInformation($"Successfully called {nameof(this.GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
+        logger.LogInformation(
+            $"Successfully called {nameof(GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");
 
         return new JsonResult(products);
     }

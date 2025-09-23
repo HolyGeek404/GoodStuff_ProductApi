@@ -1,5 +1,4 @@
 using MediatR;
-using Model.DataAccess;
 using Model.Services;
 
 namespace Model.Features.Product.Queries.GetProductById;

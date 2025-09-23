@@ -1,8 +1,9 @@
+using GoodStuff_DomainModels.Models.Enums;
 using MediatR;
 
 namespace Model.Features.Product.Queries.GetAllProductsByType;
 
 public record GetAllProductsByTypeQuery : IRequest<object?>
 {
-    public string Type { get; init; }
+    public ProductCategories Type { get; init; }
 }
