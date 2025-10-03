@@ -1,5 +1,5 @@
 using Autofac.Extensions.DependencyInjection;
-using WebApi.Extensions;
+using GoodStuff.ProductApi.Presentation.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());

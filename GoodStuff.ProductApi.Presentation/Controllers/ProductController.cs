@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Model.Features.Product.Queries.GetAllProductsByType;
 using Model.Features.Product.Queries.GetProductById;
 
-namespace WebApi.Controllers;
+namespace GoodStuff.ProductApi.Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]

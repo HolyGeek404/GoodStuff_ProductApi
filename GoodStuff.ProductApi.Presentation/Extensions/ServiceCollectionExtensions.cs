@@ -8,7 +8,7 @@ using Microsoft.OpenApi.Models;
 using Model.DataAccess;
 using Model.Services;
 
-namespace WebApi.Extensions;
+namespace GoodStuff.ProductApi.Presentation.Extensions;
 
 public static class ServiceCollectionExtensions
 {
