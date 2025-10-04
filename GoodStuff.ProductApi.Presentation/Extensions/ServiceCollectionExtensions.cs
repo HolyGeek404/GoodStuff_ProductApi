@@ -2,6 +2,7 @@ using Autofac;
 using Azure.Identity;
 using GoodStuff_DomainModels.Models.Enums;
 using GoodStuff.ProductApi.Application;
+using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
 using GoodStuff.ProductApi.Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
@@ -29,7 +30,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddMediatRConfig(this IServiceCollection services)
     {
-        services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(BaseProductDao).Assembly));
+        services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetAllProductsByTypeQuery).Assembly));
 
         return services;
     }
