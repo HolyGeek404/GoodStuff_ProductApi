@@ -1,4 +1,4 @@
-using GoodStuff_DomainModels.Models.Enums;
+
 using GoodStuff_DomainModels.Models.Products;
 using GoodStuff.ProductApi.Application;
 using Microsoft.Azure.Cosmos;

@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="GoodStuff_DomainModels" Version="1.0.5"/>
+        <PackageReference Include="GoodStuff_DomainModels" Version="1.0.6" />
         <PackageReference Include="MediatR" Version="13.0.0"/>
-        <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.53.1"/>
+        <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.54.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
     </ItemGroup>
 

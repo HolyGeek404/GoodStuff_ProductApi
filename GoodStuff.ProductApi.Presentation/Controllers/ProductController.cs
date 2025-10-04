@@ -1,4 +1,4 @@
-using GoodStuff_DomainModels.Models.Enums;
+
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetProductById;
 using MediatR;

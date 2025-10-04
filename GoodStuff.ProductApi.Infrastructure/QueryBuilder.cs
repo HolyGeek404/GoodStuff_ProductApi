@@ -1,4 +1,3 @@
-using GoodStuff_DomainModels.Models.Enums;
 using GoodStuff.ProductApi.Domain;
 using Microsoft.Azure.Cosmos;
 
@@ -6,14 +5,14 @@ namespace GoodStuff.ProductApi.Infrastructure;
 
 public static class QueryBuilder
 {
-    public static QueryDefinition SelectAllProductsByType(ProductCategories type)
+    public static QueryDefinition SelectAllProductsByType(string type)
     {
-        return new QueryDefinition(Queries.GetAllByType).WithParameter("@category", Enum.GetName(type)?.ToUpper());
+        return new QueryDefinition(Queries.GetAllByType).WithParameter("@category", type);
     }
 
-    public static QueryDefinition SelectSingleProductById(ProductCategories type, string id)
+    public static QueryDefinition SelectSingleProductById(string type, string id)
     {
-        return new QueryDefinition(Queries.GetSingleById).WithParameter("@category", Enum.GetName(type)?.ToUpper())
+        return new QueryDefinition(Queries.GetSingleById).WithParameter("@category", type)
             .WithParameter("@id", id);
     }
 }

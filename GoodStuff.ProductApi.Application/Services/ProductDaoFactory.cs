@@ -1,12 +1,11 @@
 using Autofac.Features.Indexed;
-using GoodStuff_DomainModels.Models.Enums;
 
 namespace GoodStuff.ProductApi.Application.Services;
 
-public class ProductDaoFactory(IIndex<ProductCategories, IProductDao> daoCollection) : IProductDaoFactory
+public class ProductDaoFactory(IIndex<string, IProductDao> daoCollection) : IProductDaoFactory
 {
-    public IProductDao? GetProductDao(ProductCategories type)
+    public IProductDao? GetProductDao(string category)
     {
-        return daoCollection.TryGetValue(type, out var dao) ? dao : null;
+        return daoCollection.TryGetValue(category, out var dao) ? dao : null;
     }
 }
