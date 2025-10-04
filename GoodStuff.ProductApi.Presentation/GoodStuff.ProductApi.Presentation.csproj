@@ -31,7 +31,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Model\Model.csproj"/>
+        <ProjectReference Include="..\GoodStuff.ProductApi.Application\GoodStuff.ProductApi.Application.csproj" />
+        <ProjectReference Include="..\GoodStuff.ProductApi.Infrastructure\GoodStuff.ProductApi.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,8 +1,7 @@
 using Autofac.Features.Indexed;
 using GoodStuff_DomainModels.Models.Enums;
-using Model.DataAccess;
 
-namespace Model.Services;
+namespace GoodStuff.ProductApi.Application.Services;
 
 public class ProductDaoFactory(IIndex<ProductCategories, IProductDao> daoCollection) : IProductDaoFactory
 {

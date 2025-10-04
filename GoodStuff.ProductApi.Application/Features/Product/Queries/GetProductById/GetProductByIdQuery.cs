@@ -1,7 +1,7 @@
 using GoodStuff_DomainModels.Models.Enums;
 using MediatR;
 
-namespace Model.Features.Product.Queries.GetProductById;
+namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetProductById;
 
 public class GetProductByIdQuery : IRequest<object?>
 {

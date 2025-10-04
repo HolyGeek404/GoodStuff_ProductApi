@@ -19,4 +19,9 @@
         </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\GoodStuff.ProductApi.Application\GoodStuff.ProductApi.Application.csproj" />
+      <ProjectReference Include="..\GoodStuff.ProductApi.Domain\GoodStuff.ProductApi.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

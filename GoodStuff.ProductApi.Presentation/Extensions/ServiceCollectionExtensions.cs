@@ -1,12 +1,13 @@
 using Autofac;
 using Azure.Identity;
 using GoodStuff_DomainModels.Models.Enums;
+using GoodStuff.ProductApi.Application;
+using GoodStuff.ProductApi.Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using Model.DataAccess;
-using Model.Services;
+using GoodStuff.ProductApi.Infrastructure.DataAccess;
 
 namespace GoodStuff.ProductApi.Presentation.Extensions;
 

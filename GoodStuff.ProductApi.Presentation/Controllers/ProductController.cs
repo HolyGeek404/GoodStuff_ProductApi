@@ -1,9 +1,9 @@
 using GoodStuff_DomainModels.Models.Enums;
+using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
+using GoodStuff.ProductApi.Application.Features.Product.Queries.GetProductById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Model.Features.Product.Queries.GetAllProductsByType;
-using Model.Features.Product.Queries.GetProductById;
 
 namespace GoodStuff.ProductApi.Presentation.Controllers;
 

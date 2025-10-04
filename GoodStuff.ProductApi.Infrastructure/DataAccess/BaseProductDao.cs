@@ -1,7 +1,7 @@
 using GoodStuff_DomainModels.Models.Enums;
 using Microsoft.Azure.Cosmos;
 
-namespace Model.DataAccess;
+namespace GoodStuff.ProductApi.Infrastructure.DataAccess;
 
 public abstract class BaseProductDao(CosmosClient cosmosClient)
 {

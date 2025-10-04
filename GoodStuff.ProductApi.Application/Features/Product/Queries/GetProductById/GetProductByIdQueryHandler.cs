@@ -1,7 +1,7 @@
+using GoodStuff.ProductApi.Application.Services;
 using MediatR;
-using Model.Services;
 
-namespace Model.Features.Product.Queries.GetProductById;
+namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetProductById;
 
 public class GetProductByIdQueryHandler(IProductDaoFactory daoFactory) : IRequestHandler<GetProductByIdQuery, object?>
 {

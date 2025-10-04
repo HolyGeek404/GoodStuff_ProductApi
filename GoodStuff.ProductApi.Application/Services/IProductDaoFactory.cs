@@ -1,7 +1,6 @@
 using GoodStuff_DomainModels.Models.Enums;
-using Model.DataAccess;
 
-namespace Model.Services;
+namespace GoodStuff.ProductApi.Application.Services;
 
 public interface IProductDaoFactory
 {

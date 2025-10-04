@@ -1,9 +1,9 @@
 using GoodStuff_DomainModels.Models.Enums;
 using GoodStuff_DomainModels.Models.Products;
+using GoodStuff.ProductApi.Application;
 using Microsoft.Azure.Cosmos;
-using Model.Services;
 
-namespace Model.DataAccess;
+namespace GoodStuff.ProductApi.Infrastructure.DataAccess;
 
 public class GpuDao(CosmosClient cosmosClient) : BaseProductDao(cosmosClient), IProductDao
 {

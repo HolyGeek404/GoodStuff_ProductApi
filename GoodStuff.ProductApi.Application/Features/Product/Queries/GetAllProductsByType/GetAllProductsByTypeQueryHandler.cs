@@ -1,7 +1,7 @@
-﻿using MediatR;
-using Model.Services;
+﻿using GoodStuff.ProductApi.Application.Services;
+using MediatR;
 
-namespace Model.Features.Product.Queries.GetAllProductsByType;
+namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
 
 public class GetAllProductsByTypeQueryHandler(IProductDaoFactory daoFactory)
     : IRequestHandler<GetAllProductsByTypeQuery, object?>
