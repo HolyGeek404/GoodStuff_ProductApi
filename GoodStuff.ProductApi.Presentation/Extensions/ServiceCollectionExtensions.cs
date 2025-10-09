@@ -1,14 +1,15 @@
 using Autofac;
 using Azure.Identity;
 using GoodStuff_DomainModels.Models.Products;
-using GoodStuff.ProductApi.Application;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
+using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Application.Services;
+using GoodStuff.ProductApi.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using GoodStuff.ProductApi.Infrastructure.DataAccess;
+using GoodStuff.ProductApi.Infrastructure.Repository;
 
 namespace GoodStuff.ProductApi.Presentation.Extensions;
 
@@ -16,17 +17,18 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        services.AddTransient<IProductDaoFactory, ProductDaoFactory>();
+        services.AddTransient<IRepositoryFactory, CosmosRepositoryFactory>();
 
         builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
         {
-            containerBuilder.RegisterType<GpuDao>().Keyed<IProductDao>(ProductCategories.Gpu);
-            containerBuilder.RegisterType<CpuDao>().Keyed<IProductDao>(ProductCategories.Cpu);
-            containerBuilder.RegisterType<CoolerDao>().Keyed<IProductDao>(ProductCategories.Cooler);
+            containerBuilder.RegisterType<CosmosRepository<CpuModel>>().Keyed<IRepository>(ProductCategories.Cpu);
+            containerBuilder.RegisterType<CosmosRepository<GpuModel>>().Keyed<IRepository>(ProductCategories.Gpu);
+            containerBuilder.RegisterType<CosmosRepository<CoolerModel>>().Keyed<IRepository>(ProductCategories.Cooler);
+
         });
 
         return services;
-    }
+    }   
 
     public static IServiceCollection AddMediatRConfig(this IServiceCollection services)
     {

@@ -5,5 +5,5 @@ namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProduc
 
 public record GetAllProductsByTypeQuery : IRequest<object?>
 {
-    public ProductCategories Type { get; init; }
+    public required string Type { get; init; }
 }

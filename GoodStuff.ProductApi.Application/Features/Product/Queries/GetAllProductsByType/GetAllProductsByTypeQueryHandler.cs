@@ -3,12 +3,11 @@ using MediatR;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
 
-public class GetAllProductsByTypeQueryHandler(IProductDaoFactory daoFactory)
-    : IRequestHandler<GetAllProductsByTypeQuery, object?>
+public class GetAllProductsByTypeQueryHandler(IRepositoryFactory daoFactory) : IRequestHandler<GetAllProductsByTypeQuery, object?>
 {
-    public Task<object?> Handle(GetAllProductsByTypeQuery request, CancellationToken cancellationToken)
+    public async Task<object?> Handle(GetAllProductsByTypeQuery request, CancellationToken cancellationToken)
     {
-        var dao = daoFactory.GetProductDao(request.Type);
-        return dao == null ? Task.FromResult<object?>(null) : dao.GetAllProductsByType(request.Type);
+        var dao = daoFactory.GetRepository(request.Type);
+        return dao == null ? Task.FromResult<object?>(null) : await dao.GetAllByTypeAsync(request.Type);
     }
 }

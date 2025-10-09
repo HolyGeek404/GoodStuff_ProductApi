@@ -1,10 +1,12 @@
+using GoodStuff_DomainModels.Models.Products;
+
 namespace GoodStuff.ProductApi.Application.Interfaces;
 
-public interface IRepository<T> where T : class 
+public interface IRepository
 {
-    public Task<IEnumerable<T>> GetAllByTypeAsync(string category);
-    public Task<T> GetSingleById(string category,  string id);
-    public Task<T> CreateAsync(T entity);
-    public Task<T> UpdateAsync(T entity);
-    public Task DeleteAsync(T entity);
+    public Task<IEnumerable<BaseProductModel>> GetAllByTypeAsync(string category);
+    public Task<BaseProductModel> GetSingleById(string category, string id);
+    public Task<BaseProductModel> CreateAsync(BaseProductModel entity);
+    public Task<BaseProductModel> UpdateAsync(BaseProductModel entity);
+    public Task DeleteAsync(BaseProductModel entity);
 }
