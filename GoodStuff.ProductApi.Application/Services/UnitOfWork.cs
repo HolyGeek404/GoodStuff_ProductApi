@@ -1,14 +1,14 @@
-using GoodStuff_DomainModels.Models.Products;
 using GoodStuff.ProductApi.Application.Interfaces;
+using GoodStuff.ProductApi.Domain.Products.Models;
 
 namespace GoodStuff.ProductApi.Application.Services;
 
 public class UnitOfWork(
-    IRepository<CpuModel> cpuRepository,
-    IRepository<GpuModel> gpuRepository,
-    IRepository<CoolerModel> coolerRepository)
+    IRepository<Cpu> cpuRepository,
+    IRepository<Gpu> gpuRepository,
+    IRepository<Cooler> coolerRepository) : IUnitOfWork
 {
-    public IRepository<CpuModel> CpuRepository { get; } = cpuRepository;
-    public IRepository<GpuModel> GpuRepository { get; } = gpuRepository;
-    public IRepository<CoolerModel> CoolerRepository { get; } = coolerRepository;
+    public IRepository<Cpu> CpuRepository { get; } = cpuRepository;
+    public IRepository<Gpu> GpuRepository { get; } = gpuRepository;
+    public IRepository<Cooler> CoolerRepository { get; } = coolerRepository;
 }

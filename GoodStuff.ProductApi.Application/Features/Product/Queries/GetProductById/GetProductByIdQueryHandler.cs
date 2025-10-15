@@ -1,13 +1,19 @@
 using GoodStuff.ProductApi.Application.Services;
+using GoodStuff.ProductApi.Domain.Products;
 using MediatR;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetProductById;
 
-public class GetProductByIdQueryHandler(IRepositoryFactory daoFactory) : IRequestHandler<GetProductByIdQuery, object?>
+public class GetProductByIdQueryHandler(IUnitOfWork uow) : IRequestHandler<GetProductByIdQuery, object?>
 {
     public async Task<object?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
-        var dao = daoFactory.GetRepository(request.Type);
-        return dao == null ? Task.FromResult<object?>(null) : await dao.GetSingleById(request.Type, request.Id);
+        return request.Type switch
+        {
+            ProductCategories.Gpu => await uow.GpuRepository.GetById(request.Type, request.Id),
+            ProductCategories.Cpu => await uow.CpuRepository.GetById(request.Type, request.Id),
+            ProductCategories.Cooler => await uow.CoolerRepository.GetById(request.Type, request.Id),
+            _ => Enumerable.Empty<object>()
+        };
     }
 }

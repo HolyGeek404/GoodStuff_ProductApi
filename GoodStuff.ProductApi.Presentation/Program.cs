@@ -6,6 +6,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Services.AddCosmosRepoConfig(builder);
 builder.Services.AddMediatRConfig();
 builder.Services.AddAzureConfig(builder.Configuration);
+builder.Services.AddServices();
 builder.Services.AddDataBaseConfig(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

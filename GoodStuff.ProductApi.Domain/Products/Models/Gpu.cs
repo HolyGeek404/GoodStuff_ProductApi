@@ -1,4 +1,4 @@
-using GoodStuff.ProductApi.Domain.Products;
+namespace GoodStuff.ProductApi.Domain.Products.Models;
 
 public class Gpu : BaseProduct
 {
