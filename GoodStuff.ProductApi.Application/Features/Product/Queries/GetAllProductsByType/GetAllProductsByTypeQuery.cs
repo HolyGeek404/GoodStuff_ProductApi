@@ -1,4 +1,3 @@
-
 using MediatR;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;

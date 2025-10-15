@@ -3,7 +3,6 @@ using Azure.Identity;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
 using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Application.Services;
-using GoodStuff.ProductApi.Domain.Products;
 using GoodStuff.ProductApi.Domain.Products.Models;
 using GoodStuff.ProductApi.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,7 +27,8 @@ public static class ServiceCollectionExtensions
         {
             containerBuilder.RegisterType<CosmosRepository<Cpu>>().As<IRepository<Cpu>>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<CosmosRepository<Gpu>>().As<IRepository<Gpu>>().InstancePerLifetimeScope();
-            containerBuilder.RegisterType<CosmosRepository<Cooler>>().As<IRepository<Cooler>>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<CosmosRepository<Cooler>>().As<IRepository<Cooler>>()
+                .InstancePerLifetimeScope();
         });
         return services;
     }

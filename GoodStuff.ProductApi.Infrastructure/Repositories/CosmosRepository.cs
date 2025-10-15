@@ -3,14 +3,14 @@ using Microsoft.Azure.Cosmos;
 
 namespace GoodStuff.ProductApi.Infrastructure.Repositories;
 
-public class CosmosRepository<TProduct>(CosmosClient cosmosClient): IRepository<TProduct>
+public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IRepository<TProduct>
 {
     private readonly Container _container = cosmosClient.GetContainer("GoodStuff", "Products");
 
     public async Task<IEnumerable<TProduct>> GetAllAsync(string category)
     {
         var query = QueryBuilder.SelectAllProductsByType(category);
-        var iterator = _container.GetItemQueryIterator<TProduct>(queryDefinition: query);
+        var iterator = _container.GetItemQueryIterator<TProduct>(query);
         var results = new List<TProduct>();
         while (iterator.HasMoreResults)
         {
@@ -24,7 +24,7 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient): IRepository<
     public async Task<TProduct?> GetById(string category, string id)
     {
         var query = QueryBuilder.SelectSingleProductById(category, id);
-        var iterator = _container.GetItemQueryIterator<TProduct>(queryDefinition: query);
+        var iterator = _container.GetItemQueryIterator<TProduct>(query);
         var results = await iterator.ReadNextAsync();
         return (TProduct)results.Resource.First()!;
     }
