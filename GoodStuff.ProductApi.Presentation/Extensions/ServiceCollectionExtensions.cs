@@ -3,28 +3,23 @@ using Azure.Identity;
 using GoodStuff_DomainModels.Models.Products;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
 using GoodStuff.ProductApi.Application.Interfaces;
-using GoodStuff.ProductApi.Application.Services;
-using GoodStuff.ProductApi.Infrastructure;
+using GoodStuff.ProductApi.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using GoodStuff.ProductApi.Infrastructure.Repository;
 
 namespace GoodStuff.ProductApi.Presentation.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServices(this IServiceCollection services, WebApplicationBuilder builder)
+    public static IServiceCollection AddCosmosRepoConfig(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        services.AddTransient<IRepositoryFactory, CosmosRepositoryFactory>();
-
         builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
         {
-            containerBuilder.RegisterType<CosmosRepository<CpuModel>>().Keyed<IRepository>(ProductCategories.Cpu);
-            containerBuilder.RegisterType<CosmosRepository<GpuModel>>().Keyed<IRepository>(ProductCategories.Gpu);
-            containerBuilder.RegisterType<CosmosRepository<CoolerModel>>().Keyed<IRepository>(ProductCategories.Cooler);
-
+            containerBuilder.RegisterType<CosmosRepository<CpuModel>>().Keyed<IRepository<CpuModel>>(ProductCategories.Cpu);
+            containerBuilder.RegisterType<CosmosRepository<GpuModel>>().Keyed<IRepository<GpuModel>>(ProductCategories.Gpu);
+            containerBuilder.RegisterType<CosmosRepository<CoolerModel>>().Keyed<IRepository<CoolerModel>>(ProductCategories.Cooler);
         });
 
         return services;
@@ -37,8 +32,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddAzureConfig(this IServiceCollection services,
-        IConfigurationManager configuration)
+    public static IServiceCollection AddAzureConfig(this IServiceCollection services, IConfigurationManager configuration)
     {
         var azureAd = configuration.GetSection("AzureAd");
         configuration.AddAzureKeyVault(new Uri(azureAd["KvUrl"]), new DefaultAzureCredential());
@@ -48,8 +42,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddDataBaseConfig(this IServiceCollection services,
-        IConfigurationManager configuration)
+    public static IServiceCollection AddDataBaseConfig(this IServiceCollection services, IConfigurationManager configuration)
     {
         services.AddSingleton(s => new CosmosClient(configuration.GetConnectionString("CosmosDB")));
 
@@ -92,7 +85,7 @@ public static class ServiceCollectionExtensions
                     {
                         Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
                     },
-                    new[] { $"{swaggerScope}" }
+                    [$"{swaggerScope}"]
                 }
             });
         });

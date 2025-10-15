@@ -3,7 +3,7 @@ using GoodStuff.ProductApi.Presentation.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Services.AddServices(builder);
+builder.Services.AddCosmosRepoConfig(builder);
 builder.Services.AddMediatRConfig();
 builder.Services.AddAzureConfig(builder.Configuration);
 builder.Services.AddDataBaseConfig(builder.Configuration);
