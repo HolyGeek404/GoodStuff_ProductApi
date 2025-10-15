@@ -1,4 +1,3 @@
-using GoodStuff_DomainModels.Models.Enums;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetProductById;
 using MediatR;
@@ -14,7 +13,7 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpGet]
     [Authorize(Roles = "GetProducts")]
     [Route("GetAllProductsByType")]
-    public async Task<IActionResult> GetAllProductsByType(ProductCategories type)
+    public async Task<IActionResult> GetAllProductsByType(string type)
     {
         logger.LogInformation(
             $"Calling {nameof(GetAllProductsByType)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}");
@@ -32,7 +31,7 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpGet]
     [Authorize(Roles = "GetSingleProduct")]
     [Route("GetProductById")]
-    public async Task<IActionResult> GetProductById(ProductCategories type, string id)
+    public async Task<IActionResult> GetProductById(string type, string id)
     {
         logger.LogInformation(
             $"Calling {nameof(GetProductById)} by {User.FindFirst("appid")?.Value ?? "Unknown"}. Type: {type}, Id: {id}");

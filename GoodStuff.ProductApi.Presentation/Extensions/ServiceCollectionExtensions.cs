@@ -1,37 +1,41 @@
 using Autofac;
 using Azure.Identity;
-using GoodStuff_DomainModels.Models.Enums;
-using GoodStuff.ProductApi.Application;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
+using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Application.Services;
+using GoodStuff.ProductApi.Domain.Products.Models;
+using GoodStuff.ProductApi.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using GoodStuff.ProductApi.Infrastructure.DataAccess;
 
 namespace GoodStuff.ProductApi.Presentation.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServices(this IServiceCollection services, WebApplicationBuilder builder)
+    public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddTransient<IProductDaoFactory, ProductDaoFactory>();
+        services.AddSingleton<IUnitOfWork, UnitOfWork>();
+        return services;
+    }
 
+    public static IServiceCollection AddCosmosRepoConfig(this IServiceCollection services,
+        WebApplicationBuilder builder)
+    {
         builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
         {
-            containerBuilder.RegisterType<GpuDao>().Keyed<IProductDao>(ProductCategories.Gpu);
-            containerBuilder.RegisterType<CpuDao>().Keyed<IProductDao>(ProductCategories.Cpu);
-            containerBuilder.RegisterType<CoolerDao>().Keyed<IProductDao>(ProductCategories.Cooler);
+            containerBuilder.RegisterType<CosmosRepository<Cpu>>().As<IRepository<Cpu>>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<CosmosRepository<Gpu>>().As<IRepository<Gpu>>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<CosmosRepository<Cooler>>().As<IRepository<Cooler>>()
+                .InstancePerLifetimeScope();
         });
-
         return services;
     }
 
     public static IServiceCollection AddMediatRConfig(this IServiceCollection services)
     {
         services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetAllProductsByTypeQuery).Assembly));
-
         return services;
     }
 
@@ -40,9 +44,7 @@ public static class ServiceCollectionExtensions
     {
         var azureAd = configuration.GetSection("AzureAd");
         configuration.AddAzureKeyVault(new Uri(azureAd["KvUrl"]), new DefaultAzureCredential());
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddMicrosoftIdentityWebApi(azureAd);
-
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(azureAd);
         return services;
     }
 
@@ -50,7 +52,6 @@ public static class ServiceCollectionExtensions
         IConfigurationManager configuration)
     {
         services.AddSingleton(s => new CosmosClient(configuration.GetConnectionString("CosmosDB")));
-
         return services;
     }
 
@@ -59,7 +60,6 @@ public static class ServiceCollectionExtensions
         var tenantId = configuration.GetSection("AzureAd")["TenantId"];
         var swaggerScope = configuration.GetSection("Swagger")["Scope"];
         var authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
-
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "GoodStuff Product Api Swagger", Version = "v1" });
@@ -74,12 +74,10 @@ public static class ServiceCollectionExtensions
                     {
                         AuthorizationUrl =
                             new Uri($"https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/authorize"),
-                        TokenUrl = new Uri(
-                            $"https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/token"), //token end point
-                        Scopes = new Dictionary<string, string>
-                        {
-                            { $"{swaggerScope}", "Swagger - Local testing" }
-                        }
+                        TokenUrl =
+                            new Uri(
+                                $"https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/token"), //token end point
+                        Scopes = new Dictionary<string, string> { { $"{swaggerScope}", "Swagger - Local testing" } }
                     }
                 }
             });
@@ -90,11 +88,10 @@ public static class ServiceCollectionExtensions
                     {
                         Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
                     },
-                    new[] { $"{swaggerScope}" }
+                    [$"{swaggerScope}"]
                 }
             });
         });
-
         return services;
     }
 }

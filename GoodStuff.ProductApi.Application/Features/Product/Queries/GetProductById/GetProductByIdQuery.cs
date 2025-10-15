@@ -1,10 +1,9 @@
-using GoodStuff_DomainModels.Models.Enums;
 using MediatR;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetProductById;
 
 public class GetProductByIdQuery : IRequest<object?>
 {
-    public ProductCategories Type { get; init; }
-    public string Id { get; init; }
+    public required string Type { get; init; }
+    public required string Id { get; init; }
 }
