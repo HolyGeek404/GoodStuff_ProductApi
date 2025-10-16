@@ -5,9 +5,9 @@ using MediatR;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetProductById;
 
-public class GetProductByIdQueryHandler(IReadRepoCollection uow) : IRequestHandler<GetProductByIdQuery, object?>
+public class GetByIdQueryHandler(IReadRepoCollection uow) : IRequestHandler<GetByIdQuery, object?>
 {
-    public async Task<object?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+    public async Task<object?> Handle(GetByIdQuery request, CancellationToken cancellationToken)
     {
         return request.Type switch
         {

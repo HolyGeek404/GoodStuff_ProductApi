@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddMediatRConfig(this IServiceCollection services)
     {
-        services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetAllProductsByTypeQuery).Assembly));
+        services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetByTypeQuery).Assembly));
         return services;
     }
 
