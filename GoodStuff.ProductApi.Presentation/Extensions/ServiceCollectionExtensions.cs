@@ -16,20 +16,18 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddSingleton<IRepoCollection, RepoCollection>();
+        services.AddSingleton<IReadRepoCollection, ReadRepoCollection>();
         return services;
     }
 
-    public static IServiceCollection AddCosmosRepoConfig(this IServiceCollection services,
-        WebApplicationBuilder builder)
+    public static IServiceCollection AddCosmosRepoConfig(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
-        {
-            containerBuilder.RegisterType<CosmosRepository<Cpu>>().As<IRepository<Cpu>>().InstancePerLifetimeScope();
-            containerBuilder.RegisterType<CosmosRepository<Gpu>>().As<IRepository<Gpu>>().InstancePerLifetimeScope();
-            containerBuilder.RegisterType<CosmosRepository<Cooler>>().As<IRepository<Cooler>>()
-                .InstancePerLifetimeScope();
-        });
+        services.AddScoped(typeof(IReadRepository<>), typeof(CosmosRepository<>));
+        services.AddScoped(typeof(IWriteRepository<>), typeof(CosmosRepository<>));
+
+        services.AddScoped<IReadRepoCollection, ReadRepoCollection>();
+        services.AddScoped<IWriteRepoCollection, WriteRepoCollection>();
+        
         return services;
     }
 
