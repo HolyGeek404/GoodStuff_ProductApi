@@ -3,7 +3,7 @@ using Microsoft.Azure.Cosmos;
 
 namespace GoodStuff.ProductApi.Infrastructure.Repositories;
 
-public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IRepository<TProduct>
+public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IReadRepository<TProduct>, IWriteRepository<TProduct>
 {
     private readonly Container _container = cosmosClient.GetContainer("GoodStuff", "Products");
 

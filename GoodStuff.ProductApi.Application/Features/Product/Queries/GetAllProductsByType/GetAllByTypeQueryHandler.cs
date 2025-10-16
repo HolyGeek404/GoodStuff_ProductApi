@@ -1,11 +1,10 @@
 ﻿using GoodStuff.ProductApi.Application.Interfaces;
-using GoodStuff.ProductApi.Application.Services;
 using GoodStuff.ProductApi.Domain.Products;
 using MediatR;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
 
-public class GetAllByTypeQueryHandler(IRepoCollection uow) : IRequestHandler<GetAllProductsByTypeQuery, object?>
+public class GetAllByTypeQueryHandler(IReadRepoCollection uow) : IRequestHandler<GetAllProductsByTypeQuery, object?>
 {
     public async Task<object?> Handle(GetAllProductsByTypeQuery request, CancellationToken cancellationToken)
     {
