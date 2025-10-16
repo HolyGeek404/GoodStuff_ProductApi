@@ -3,7 +3,7 @@ using GoodStuff.ProductApi.Domain.Products.Models;
 
 namespace GoodStuff.ProductApi.Application.Services;
 
-public class UnitOfWork(
+public class RepoCollection(
     IRepository<Cpu> cpuRepository,
     IRepository<Gpu> gpuRepository,
     IRepository<Cooler> coolerRepository) : IUnitOfWork
