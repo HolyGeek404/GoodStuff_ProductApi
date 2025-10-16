@@ -1,9 +1,8 @@
-using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Domain.Products.Models;
 
-namespace GoodStuff.ProductApi.Application.Services;
+namespace GoodStuff.ProductApi.Application.Interfaces;
 
-public interface IUnitOfWork
+public interface IRepoCollection
 {
     IRepository<Cpu> CpuRepository { get; }
     IRepository<Gpu> GpuRepository { get; }

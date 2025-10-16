@@ -6,7 +6,7 @@ namespace GoodStuff.ProductApi.Application.Services;
 public class RepoCollection(
     IRepository<Cpu> cpuRepository,
     IRepository<Gpu> gpuRepository,
-    IRepository<Cooler> coolerRepository) : IUnitOfWork
+    IRepository<Cooler> coolerRepository) : IRepoCollection
 {
     public IRepository<Cpu> CpuRepository { get; } = cpuRepository;
     public IRepository<Gpu> GpuRepository { get; } = gpuRepository;

@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddSingleton<IUnitOfWork, RepoCollection>();
+        services.AddSingleton<IRepoCollection, RepoCollection>();
         return services;
     }
 
