@@ -1,5 +1,4 @@
 using System.Net;
-using GoodStuff.ProductApi.Domain.Products.Models;
 using MediatR;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Commands.Update;

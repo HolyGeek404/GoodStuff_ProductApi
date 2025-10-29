@@ -1,4 +1,5 @@
 using System.Net;
+using GoodStuff.ProductApi.Application.Features.Product.Commands.Create;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Update;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetById;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetByType;
@@ -72,11 +73,10 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
         }
     }
 
-
     [HttpPatch]
     [Authorize(Roles = "Update")]
     [Route("")]
-    public async Task<IActionResult> Update(string product, string type)
+    public async Task<IActionResult> Update([FromBody]string product, string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         logger.LogInformation("Calling {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}", nameof(Update), caller, type, product);
@@ -118,5 +118,39 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
         }
     }
 
+    [HttpPost]
+    [Authorize(Roles = "Create")]
+    [Route("")]
+    public async Task<IActionResult> Create([FromBody] CreateCommand request)
+    {
+        var caller = User.FindFirst("appid")?.Value ?? "Unknown";
+        logger.LogInformation("Calling {CreateName} by {Caller}. Type: {Type}, Product: {Product}", nameof(Create), caller, request.Type, request.Product);
+
+        if (string.IsNullOrEmpty(request.Product))
+        {
+            logger.LogWarning("Bad request in {CreateName} by {Caller}. Type: {Type}, Product is empty", nameof(Create), caller, request.Type);
+            return BadRequest("Product cannot be empty.");
+        }
+
+        try
+        {
+            var result = await mediator.Send(request);
+
+            if (result == null || string.IsNullOrEmpty(result.ProductId))
+            {
+                logger.LogWarning("Create failed or returned null in {CreateName} by {Caller}. Type: {Type}, Product: {Product}", nameof(Create), caller, request.Type, request.Product);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            logger.LogInformation("Successfully created product in {CreateName} by {Caller}. Type: {Type}, Product: {Product}, Id: {Id}", nameof(Create), caller, request.Type, request.Product, result.ProductId);
+
+            return CreatedAtAction(nameof(GetById), new { type = result.Category, id = result.ProductId }, result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Exception in {CreateName} by {Caller}. Type: {Type}, Product: {Product}", nameof(Create), caller, request.Type, request.Product);
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+    }
 
 }

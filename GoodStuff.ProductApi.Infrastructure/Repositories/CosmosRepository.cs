@@ -31,9 +31,21 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IReadReposi
         return (TProduct)results.Resource.First()!;
     }
 
-    public async Task CreateAsync(TProduct entity)
+    public async Task<BaseProduct?> CreateAsync(TProduct entity, string id, string pk)
     {
-        await _container.CreateItemAsync(entity);
+        var partitionKey = new PartitionKey(pk);
+        try
+        {
+            var result = await _container.CreateItemAsync(entity,partitionKey);
+            return result.Resource as BaseProduct;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+        return null;
     }
 
     public async Task<HttpStatusCode> UpdateAsync(TProduct entity, string id, string pk)

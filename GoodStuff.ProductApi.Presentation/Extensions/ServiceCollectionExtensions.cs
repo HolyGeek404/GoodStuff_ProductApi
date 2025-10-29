@@ -1,9 +1,7 @@
-using Autofac;
 using Azure.Identity;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetByType;
 using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Application.Services;
-using GoodStuff.ProductApi.Domain.Products.Models;
 using GoodStuff.ProductApi.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
