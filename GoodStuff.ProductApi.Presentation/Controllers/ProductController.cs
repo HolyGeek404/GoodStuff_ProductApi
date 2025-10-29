@@ -2,11 +2,9 @@ using System.Net;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Update;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetById;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetByType;
-using GoodStuff.ProductApi.Domain.Products.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace GoodStuff.ProductApi.Presentation.Controllers;
 
@@ -19,15 +17,26 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [Route("")]
     public async Task<IActionResult> GetByType(string type)
     {
-        logger.LogInformation("Calling {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), User.FindFirst("appid")?.Value ?? "Unknown", type);
+        var caller = User.FindFirst("appid")?.Value ?? "Unknown";
+        logger.LogInformation("Calling {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller, type);
 
-        var result = await mediator.Send(new GetByTypeQuery { Type = type });
-        if (result == null)
-            return NotFound($"No products found for type: {type}");
+        try
+        {
+            var result = await mediator.Send(new GetByTypeQuery { Type = type });
+            if (result == null)
+            {
+                logger.LogInformation("No products found in {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller, type);
+                return NotFound($"No products found for type: {type}");
+            }
 
-        logger.LogInformation("Successfully called {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), User.FindFirst("appid")?.Value ?? "Unknown", type);
-
-        return new JsonResult(result);
+            logger.LogInformation("Successfully called {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller, type);
+            return new JsonResult(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Exception in {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller, type);
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
     }
 
     [HttpGet]
@@ -35,19 +44,34 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [Route("{id}")]
     public async Task<IActionResult> GetById(string type, string id)
     {
-        logger.LogInformation("Calling {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), User.FindFirst("appid")?.Value ?? "Unknown", type, id);
+        var caller = User.FindFirst("appid")?.Value ?? "Unknown";
+        logger.LogInformation("Calling {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), caller, type, id);
 
         if (string.IsNullOrEmpty(id))
+        {
+            logger.LogWarning("Bad request in {GetByIdName} by {Unknown}. Type: {Type}, Id is empty", nameof(GetById), caller, type);
             return BadRequest("Product id cannot be empty.");
+        }
 
-        var products = await mediator.Send(new GetByIdQuery { Type = type, Id = id });
-        if (products == null)
-            return NotFound($"No product found for type: {type} and id: {id}");
+        try
+        {
+            var products = await mediator.Send(new GetByIdQuery { Type = type, Id = id });
+            if (products == null)
+            {
+                logger.LogInformation("No product found in {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), caller, type, id);
+                return NotFound($"No product found for type: {type} and id: {id}");
+            }
 
-        logger.LogInformation("Successfully called {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), User.FindFirst("appid")?.Value ?? "Unknown", type, id);
-
-        return new JsonResult(products);
+            logger.LogInformation("Successfully called {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), caller, type, id);
+            return new JsonResult(products);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Exception in {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), caller, type, id);
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
     }
+
 
     [HttpPatch]
     [Authorize(Roles = "Update")]
