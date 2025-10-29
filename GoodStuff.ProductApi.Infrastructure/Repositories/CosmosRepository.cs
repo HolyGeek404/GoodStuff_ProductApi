@@ -22,7 +22,6 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IReadReposi
         
         return results;
     }
-
     public async Task<TProduct?> GetById(string category, string id)
     {
         var query = QueryBuilder.SelectSingleProductById(category, id);
@@ -30,7 +29,6 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IReadReposi
         var results = await iterator.ReadNextAsync();
         return (TProduct)results.Resource.First()!;
     }
-
     public async Task<BaseProduct?> CreateAsync(TProduct entity, string id, string pk)
     {
         var partitionKey = new PartitionKey(pk);
@@ -47,7 +45,6 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IReadReposi
 
         return null;
     }
-
     public async Task<HttpStatusCode> UpdateAsync(TProduct entity, string id, string pk)
     {
         var partitionKey = new PartitionKey(pk);
@@ -55,8 +52,9 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IReadReposi
         return result.StatusCode;
     }
 
-    public async Task DeleteAsync(string id, string partitionKey)
+    public async Task<HttpStatusCode> DeleteAsync(Guid id, string partitionKey)
     {
-        await _container.DeleteItemAsync<TProduct>(id, new PartitionKey(partitionKey));
+       var result = await _container.DeleteItemAsync<TProduct>(id.ToString(), new PartitionKey(partitionKey));
+       return result.StatusCode;
     }
 }

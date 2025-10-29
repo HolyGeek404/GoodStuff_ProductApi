@@ -7,5 +7,5 @@ public interface IWriteRepository<TProduct>
 {
     public Task<BaseProduct?> CreateAsync(TProduct entity, string id, string pk);
     public Task<HttpStatusCode> UpdateAsync(TProduct entity, string id, string pk);
-    public Task DeleteAsync(string id, string partitionKey);
+    public Task<HttpStatusCode> DeleteAsync(Guid id, string partitionKey);
 }

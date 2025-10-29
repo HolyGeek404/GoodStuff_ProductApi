@@ -1,5 +1,6 @@
 using System.Net;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Create;
+using GoodStuff.ProductApi.Application.Features.Product.Commands.Delete;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Update;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetById;
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetByType;
@@ -153,4 +154,47 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
         }
     }
 
+    [HttpDelete]
+    // [Authorize(Roles = "Delete")]
+    [Route("")]
+    public async Task<IActionResult> Delete(Guid id, string type)
+    {
+        var caller = User.FindFirst("appid")?.Value ?? "Unknown";
+        logger.LogInformation("Delete request received by {Caller}. Id: {Id}, Type: {Type}", caller, id, type);
+
+        if (id == Guid.Empty || string.IsNullOrEmpty(type))
+        {
+            logger.LogWarning("Delete failed due to missing parameters. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+            return BadRequest("Both 'id' and 'type' are required.");
+        }
+
+        try
+        {
+            var result = await mediator.Send(new DeleteCommand { Id = id, Type = type });
+
+            switch (result)
+            {
+                case HttpStatusCode.NoContent:
+                    logger.LogInformation("Successfully deleted item. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+                    return NoContent();
+
+                case HttpStatusCode.NotFound:
+                    logger.LogWarning("Item not found for deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+                    return NotFound();
+
+                case HttpStatusCode.BadRequest:
+                    logger.LogWarning("Bad request during deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+                    return BadRequest();
+
+                default:
+                    logger.LogError("Unexpected status code {Status} during deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", result, caller, id, type);
+                    return StatusCode((int)result);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Exception occurred during deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+            return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+        }
+    }
 }
