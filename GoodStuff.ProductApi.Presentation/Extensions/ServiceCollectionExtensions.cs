@@ -18,14 +18,15 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddCosmosRepoConfig(this IServiceCollection services, WebApplicationBuilder builder)
+    public static IServiceCollection AddCosmosRepoConfig(this IServiceCollection services,
+        WebApplicationBuilder builder)
     {
         services.AddScoped(typeof(IReadRepository<>), typeof(CosmosRepository<>));
         services.AddScoped(typeof(IWriteRepository<>), typeof(CosmosRepository<>));
 
         services.AddScoped<IReadRepoCollection, ReadRepoCollection>();
         services.AddScoped<IWriteRepoCollection, WriteRepoCollection>();
-        
+
         return services;
     }
 

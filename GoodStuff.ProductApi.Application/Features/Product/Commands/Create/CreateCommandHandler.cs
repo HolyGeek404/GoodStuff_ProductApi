@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Commands.Create;
 
-public class CreateCommandHandler(IWriteRepoCollection uow): IRequestHandler<CreateCommand, BaseProduct?>
+public class CreateCommandHandler(IWriteRepoCollection uow) : IRequestHandler<CreateCommand, BaseProduct?>
 {
     public async Task<BaseProduct?> Handle(CreateCommand request, CancellationToken cancellationToken)
     {

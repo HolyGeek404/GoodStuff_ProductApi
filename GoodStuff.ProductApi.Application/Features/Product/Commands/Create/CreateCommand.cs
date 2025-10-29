@@ -3,8 +3,8 @@ using MediatR;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Commands.Create;
 
-public class CreateCommand:IRequest<BaseProduct?>
+public class CreateCommand : IRequest<BaseProduct?>
 {
-    public required string  Product { get; set; }
-    public required string  Type { get; set; }
+    public required string Product { get; set; }
+    public required string Type { get; set; }
 }

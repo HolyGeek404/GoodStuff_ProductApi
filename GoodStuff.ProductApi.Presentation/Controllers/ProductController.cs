@@ -27,16 +27,19 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
             var result = await mediator.Send(new GetByTypeQuery { Type = type });
             if (result == null)
             {
-                logger.LogInformation("No products found in {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller, type);
+                logger.LogInformation("No products found in {GetByTypeName} by {Unknown}. Type: {Type}",
+                    nameof(GetByType), caller, type);
                 return NotFound($"No products found for type: {type}");
             }
 
-            logger.LogInformation("Successfully called {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller, type);
+            logger.LogInformation("Successfully called {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType),
+                caller, type);
             return new JsonResult(result);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception in {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller, type);
+            logger.LogError(ex, "Exception in {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller,
+                type);
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -47,11 +50,13 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     public async Task<IActionResult> GetById(string type, string id)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
-        logger.LogInformation("Calling {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), caller, type, id);
+        logger.LogInformation("Calling {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), caller,
+            type, id);
 
         if (string.IsNullOrEmpty(id))
         {
-            logger.LogWarning("Bad request in {GetByIdName} by {Unknown}. Type: {Type}, Id is empty", nameof(GetById), caller, type);
+            logger.LogWarning("Bad request in {GetByIdName} by {Unknown}. Type: {Type}, Id is empty", nameof(GetById),
+                caller, type);
             return BadRequest("Product id cannot be empty.");
         }
 
@@ -60,16 +65,19 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
             var products = await mediator.Send(new GetByIdQuery { Type = type, Id = id });
             if (products == null)
             {
-                logger.LogInformation("No product found in {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), caller, type, id);
+                logger.LogInformation("No product found in {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}",
+                    nameof(GetById), caller, type, id);
                 return NotFound($"No product found for type: {type} and id: {id}");
             }
 
-            logger.LogInformation("Successfully called {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), caller, type, id);
+            logger.LogInformation("Successfully called {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}",
+                nameof(GetById), caller, type, id);
             return new JsonResult(products);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception in {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById), caller, type, id);
+            logger.LogError(ex, "Exception in {GetByIdName} by {Unknown}. Type: {Type}, Id: {Id}", nameof(GetById),
+                caller, type, id);
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -77,14 +85,16 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpPatch]
     [Authorize(Roles = "Update")]
     [Route("")]
-    public async Task<IActionResult> Update([FromBody]string product, string type)
+    public async Task<IActionResult> Update([FromBody] string product, string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
-        logger.LogInformation("Calling {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}", nameof(Update), caller, type, product);
+        logger.LogInformation("Calling {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}", nameof(Update),
+            caller, type, product);
 
         if (string.IsNullOrEmpty(product))
         {
-            logger.LogWarning("Bad request in {UpdateName} by {Unknown}. Type: {Type}, Product is empty", nameof(Update), caller, type);
+            logger.LogWarning("Bad request in {UpdateName} by {Unknown}. Type: {Type}, Product is empty",
+                nameof(Update), caller, type);
             return BadRequest("Product cannot be empty.");
         }
 
@@ -96,25 +106,34 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
             {
                 case HttpStatusCode.NoContent:
                 case HttpStatusCode.OK:
-                    logger.LogInformation("Successfully called {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}", nameof(Update), caller, type, product);
+                    logger.LogInformation(
+                        "Successfully called {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}",
+                        nameof(Update), caller, type, product);
                     return NoContent();
 
                 case HttpStatusCode.NotFound:
-                    logger.LogInformation("No product found in {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}", nameof(Update), caller, type, product);
+                    logger.LogInformation(
+                        "No product found in {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}",
+                        nameof(Update), caller, type, product);
                     return NotFound($"No product found for type: {type} and product: {product}");
 
                 case HttpStatusCode.BadRequest:
-                    logger.LogWarning("Update returned bad request in {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}", nameof(Update), caller, type, product);
+                    logger.LogWarning(
+                        "Update returned bad request in {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}",
+                        nameof(Update), caller, type, product);
                     return BadRequest();
 
                 default:
-                    logger.LogWarning("Update returned unexpected status {Status} in {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}", result, nameof(Update), caller, type, product);
+                    logger.LogWarning(
+                        "Update returned unexpected status {Status} in {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}",
+                        result, nameof(Update), caller, type, product);
                     return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception in {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}", nameof(Update), caller, type, product);
+            logger.LogError(ex, "Exception in {UpdateName} by {Unknown}. Type: {Type}, Product: {Product}",
+                nameof(Update), caller, type, product);
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -125,11 +144,13 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     public async Task<IActionResult> Create([FromBody] CreateCommand request)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
-        logger.LogInformation("Calling {CreateName} by {Caller}. Type: {Type}, Product: {Product}", nameof(Create), caller, request.Type, request.Product);
+        logger.LogInformation("Calling {CreateName} by {Caller}. Type: {Type}, Product: {Product}", nameof(Create),
+            caller, request.Type, request.Product);
 
         if (string.IsNullOrEmpty(request.Product))
         {
-            logger.LogWarning("Bad request in {CreateName} by {Caller}. Type: {Type}, Product is empty", nameof(Create), caller, request.Type);
+            logger.LogWarning("Bad request in {CreateName} by {Caller}. Type: {Type}, Product is empty", nameof(Create),
+                caller, request.Type);
             return BadRequest("Product cannot be empty.");
         }
 
@@ -139,17 +160,22 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 
             if (result == null || string.IsNullOrEmpty(result.ProductId))
             {
-                logger.LogWarning("Create failed or returned null in {CreateName} by {Caller}. Type: {Type}, Product: {Product}", nameof(Create), caller, request.Type, request.Product);
+                logger.LogWarning(
+                    "Create failed or returned null in {CreateName} by {Caller}. Type: {Type}, Product: {Product}",
+                    nameof(Create), caller, request.Type, request.Product);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            logger.LogInformation("Successfully created product in {CreateName} by {Caller}. Type: {Type}, Product: {Product}, Id: {Id}", nameof(Create), caller, request.Type, request.Product, result.ProductId);
+            logger.LogInformation(
+                "Successfully created product in {CreateName} by {Caller}. Type: {Type}, Product: {Product}, Id: {Id}",
+                nameof(Create), caller, request.Type, request.Product, result.ProductId);
 
             return CreatedAtAction(nameof(GetById), new { type = result.Category, id = result.ProductId }, result);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception in {CreateName} by {Caller}. Type: {Type}, Product: {Product}", nameof(Create), caller, request.Type, request.Product);
+            logger.LogError(ex, "Exception in {CreateName} by {Caller}. Type: {Type}, Product: {Product}",
+                nameof(Create), caller, request.Type, request.Product);
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
@@ -164,7 +190,8 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 
         if (id == Guid.Empty || string.IsNullOrEmpty(type))
         {
-            logger.LogWarning("Delete failed due to missing parameters. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+            logger.LogWarning("Delete failed due to missing parameters. Caller: {Caller}, Id: {Id}, Type: {Type}",
+                caller, id, type);
             return BadRequest("Both 'id' and 'type' are required.");
         }
 
@@ -175,25 +202,31 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
             switch (result)
             {
                 case HttpStatusCode.NoContent:
-                    logger.LogInformation("Successfully deleted item. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+                    logger.LogInformation("Successfully deleted item. Caller: {Caller}, Id: {Id}, Type: {Type}", caller,
+                        id, type);
                     return NoContent();
 
                 case HttpStatusCode.NotFound:
-                    logger.LogWarning("Item not found for deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+                    logger.LogWarning("Item not found for deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", caller,
+                        id, type);
                     return NotFound();
 
                 case HttpStatusCode.BadRequest:
-                    logger.LogWarning("Bad request during deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+                    logger.LogWarning("Bad request during deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", caller,
+                        id, type);
                     return BadRequest();
 
                 default:
-                    logger.LogError("Unexpected status code {Status} during deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", result, caller, id, type);
+                    logger.LogError(
+                        "Unexpected status code {Status} during deletion. Caller: {Caller}, Id: {Id}, Type: {Type}",
+                        result, caller, id, type);
                     return StatusCode((int)result);
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception occurred during deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", caller, id, type);
+            logger.LogError(ex, "Exception occurred during deletion. Caller: {Caller}, Id: {Id}, Type: {Type}", caller,
+                id, type);
             return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
         }
     }

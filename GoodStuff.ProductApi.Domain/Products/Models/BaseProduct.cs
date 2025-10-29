@@ -9,8 +9,9 @@ public abstract class BaseProduct
     public required string Price { get; set; }
     public string? ProductImg { get; set; }
     public virtual required string Category { get; set; }
-    [JsonProperty("id")] 
-    public required string Id { get; set; }
+
+    [JsonProperty("id")] public required string Id { get; set; }
+
     public required string ProductId { get; set; }
     public required string Warranty { get; set; }
     public required string ProducerCode { get; set; }
