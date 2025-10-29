@@ -1,9 +1,7 @@
-using Autofac;
 using Azure.Identity;
-using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
+using GoodStuff.ProductApi.Application.Features.Product.Queries.GetByType;
 using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Application.Services;
-using GoodStuff.ProductApi.Domain.Products.Models;
 using GoodStuff.ProductApi.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
@@ -20,20 +18,21 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddCosmosRepoConfig(this IServiceCollection services, WebApplicationBuilder builder)
+    public static IServiceCollection AddCosmosRepoConfig(this IServiceCollection services,
+        WebApplicationBuilder builder)
     {
         services.AddScoped(typeof(IReadRepository<>), typeof(CosmosRepository<>));
         services.AddScoped(typeof(IWriteRepository<>), typeof(CosmosRepository<>));
 
         services.AddScoped<IReadRepoCollection, ReadRepoCollection>();
         services.AddScoped<IWriteRepoCollection, WriteRepoCollection>();
-        
+
         return services;
     }
 
     public static IServiceCollection AddMediatRConfig(this IServiceCollection services)
     {
-        services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetAllProductsByTypeQuery).Assembly));
+        services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetByTypeQuery).Assembly));
         return services;
     }
 

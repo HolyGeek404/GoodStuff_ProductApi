@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Reference Include="GoodStuff_DomainModels">
-            <HintPath>..\..\..\.nuget\packages\goodstuff_domainmodels\1.0.5\lib\net9.0\GoodStuff_DomainModels.dll</HintPath>
-        </Reference>
         <Reference Include="Microsoft.Azure.Cosmos.Client">
             <HintPath>..\..\..\.nuget\packages\microsoft.azure.cosmos\3.53.1\lib\netstandard2.0\Microsoft.Azure.Cosmos.Client.dll</HintPath>
+        </Reference>
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>..\..\..\.nuget\packages\newtonsoft.json\13.0.4\lib\net6.0\Newtonsoft.Json.dll</HintPath>
         </Reference>
     </ItemGroup>
 
