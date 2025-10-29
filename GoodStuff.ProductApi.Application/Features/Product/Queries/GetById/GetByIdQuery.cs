@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetProductById;
+namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetById;
 
 public class GetByIdQuery : IRequest<object?>
 {

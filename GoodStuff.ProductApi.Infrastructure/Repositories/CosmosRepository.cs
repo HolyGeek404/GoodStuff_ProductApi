@@ -1,4 +1,6 @@
+using System.Net;
 using GoodStuff.ProductApi.Application.Interfaces;
+using GoodStuff.ProductApi.Domain.Products.Models;
 using Microsoft.Azure.Cosmos;
 
 namespace GoodStuff.ProductApi.Infrastructure.Repositories;
@@ -7,7 +9,7 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IReadReposi
 {
     private readonly Container _container = cosmosClient.GetContainer("GoodStuff", "Products");
 
-    public async Task<IEnumerable<TProduct>> GetAllAsync(string category)
+    public async Task<IEnumerable<TProduct>> GetByType(string category)
     {
         var query = QueryBuilder.SelectAllProductsByType(category);
         var iterator = _container.GetItemQueryIterator<TProduct>(query);
@@ -17,7 +19,7 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IReadReposi
             var item = await iterator.ReadNextAsync();
             results.AddRange(item.Resource);
         }
-
+        
         return results;
     }
 
@@ -34,9 +36,11 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient) : IReadReposi
         await _container.CreateItemAsync(entity);
     }
 
-    public async Task UpdateAsync(TProduct entity)
+    public async Task<HttpStatusCode> UpdateAsync(TProduct entity, string id, string pk)
     {
-        await _container.UpsertItemAsync(entity);
+        var partitionKey = new PartitionKey(pk);
+        var result = await _container.ReplaceItemAsync(entity, id,partitionKey);
+        return result.StatusCode;
     }
 
     public async Task DeleteAsync(string id, string partitionKey)

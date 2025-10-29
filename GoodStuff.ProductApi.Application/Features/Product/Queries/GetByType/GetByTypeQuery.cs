@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
+namespace GoodStuff.ProductApi.Application.Features.Product.Queries.GetByType;
 
 public record GetByTypeQuery : IRequest<object?>
 {

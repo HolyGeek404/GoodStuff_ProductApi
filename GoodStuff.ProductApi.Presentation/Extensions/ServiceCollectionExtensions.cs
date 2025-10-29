@@ -1,6 +1,6 @@
 using Autofac;
 using Azure.Identity;
-using GoodStuff.ProductApi.Application.Features.Product.Queries.GetAllProductsByType;
+using GoodStuff.ProductApi.Application.Features.Product.Queries.GetByType;
 using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Application.Services;
 using GoodStuff.ProductApi.Domain.Products.Models;
