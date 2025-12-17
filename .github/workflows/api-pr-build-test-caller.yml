@@ -1,0 +1,11 @@
+name: PR Build Test
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  call-workflow-passing-data:
+    uses: HolyGeek404/goodstuff-templates/.github/workflows/api-pr-build-test.yml@main
+    with:
+      test-path: 'GoodStuff.UserApi.Application.Tests/GoodStuff.ProductApi.Application.Tests.csproj'
