@@ -27,13 +27,11 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
             var result = await mediator.Send(new GetByTypeQuery { Type = type });
             if (result == null)
             {
-                logger.LogInformation("No products found in {GetByTypeName} by {Unknown}. Type: {Type}",
-                    nameof(GetByType), caller, type);
+                logger.LogInformation("No products found in {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller, type);
                 return NotFound($"No products found for type: {type}");
             }
 
-            logger.LogInformation("Successfully called {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType),
-                caller, type);
+            logger.LogInformation("Successfully called {GetByTypeName} by {Unknown}. Type: {Type}", nameof(GetByType), caller, type);
             return new JsonResult(result);
         }
         catch (Exception ex)
@@ -141,7 +139,7 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpPost]
     [Authorize(Roles = "Create")]
     [Route("")]
-    public async Task<IActionResult> Create([FromBody] CreateCommand request)
+    public async Task<IActionResult> Create([FromBody] CreateCommand request, string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         logger.LogInformation("Calling {CreateName} by {Caller}. Type: {Type}, Product: {Product}", nameof(Create),
