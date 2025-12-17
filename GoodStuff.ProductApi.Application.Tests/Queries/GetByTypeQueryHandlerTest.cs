@@ -1,6 +1,7 @@
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetByType;
 using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Application.Services;
+using GoodStuff.ProductApi.Application.Tests.Helpers;
 using GoodStuff.ProductApi.Domain.Products;
 using GoodStuff.ProductApi.Domain.Products.Models;
 using Moq;
@@ -9,67 +10,34 @@ namespace GoodStuff.ProductApi.Application.Tests.Queries;
 
 public class GetByTypeQueryHandlerTest
 {
-    private readonly Mock<IReadRepository<Gpu>> _gpuRepoMock = new();
-    private readonly Mock<IReadRepository<Cpu>> _cpuRepoMock = new();
-    private readonly Mock<IReadRepository<Cooler>> _coolerRepoMock = new();
+    private readonly Mock<IReadRepository<Gpu>> _gpuRepo = new();
+    private readonly Mock<IReadRepository<Cpu>> _cpuRepo = new();
+    private readonly Mock<IReadRepository<Cooler>> _coolerRepo = new();
     private readonly IReadRepoCollection _uow;
 
     public GetByTypeQueryHandlerTest()
     {
-        _uow = new ReadRepoCollection(_cpuRepoMock.Object, _gpuRepoMock.Object, _coolerRepoMock.Object);
+        _uow = new ReadRepoCollection(_cpuRepo.Object, _gpuRepo.Object, _coolerRepo.Object);
     }
 
     [Theory]
     [InlineData(ProductCategories.Gpu)]
     [InlineData(ProductCategories.Cpu)]
     [InlineData(ProductCategories.Cooler)]
-    public async Task Handle_WhenTypeIsSupported_CallsCorrectRepositoryAndReturnsResult(string type)
+    public async Task Handle_WhenTypeIsSupported_ReturnsProducts(string type)
     {
         // Arrange
         var handler = new GetByTypeQueryHandler(_uow);
         var query = new GetByTypeQuery { Type = type };
 
-        switch (type)
-        {
-            case ProductCategories.Gpu:
-                var gpus = new List<Gpu> { new() { Name = "Test GPU", Category = ProductCategories.Gpu, Team = "AMD", Price = "3900", Id = "123", ProductId = "321", Warranty = "5 Years", ProducerCode = "ZXC123" } };
-                _gpuRepoMock.Setup(r => r.GetByType(type)).ReturnsAsync(gpus);
-                
-                var gpuResult = await handler.Handle(query, CancellationToken.None);
-                var typedGpuResult = Assert.IsType<IEnumerable<Gpu>>(gpuResult, exactMatch: false);
-                
-                Assert.Equal(gpus, typedGpuResult);
-                _gpuRepoMock.Verify(r => r.GetByType(type), Times.Once);
-                _cpuRepoMock.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
-                _coolerRepoMock.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
-                break;
+        var expected = SetupRepository(type);
 
-            case ProductCategories.Cpu:
-                var cpus = new List<Cpu> { new() { Name = "Test CPU", Category = ProductCategories.Cpu, Team = "AMD", Price = "3900", Id = "123", ProductId = "321", Warranty = "5 Years", ProducerCode = "ZXC123" } };
-                _cpuRepoMock.Setup(r => r.GetByType(type)).ReturnsAsync(cpus);
-                
-                var cpuResult = await handler.Handle(query, CancellationToken.None);
-                var typedCpuResult = Assert.IsType<IEnumerable<Cpu>>(cpuResult, exactMatch: false);
-                
-                Assert.Equal(cpus, typedCpuResult);
-                _cpuRepoMock.Verify(r => r.GetByType(type), Times.Once);
-                _gpuRepoMock.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
-                _coolerRepoMock.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
-                break;
+        // Act
+        var result = await handler.Handle(query, CancellationToken.None);
 
-            case ProductCategories.Cooler:
-                var coolers = new List<Cooler> { new() { Name = "Test Cooler", Category = ProductCategories.Cooler, Team = "Noctua", Price = "120", Id = "456", ProductId = "654", Warranty = "6 Years", ProducerCode = "COOL123" } };
-                _coolerRepoMock.Setup(r => r.GetByType(type)).ReturnsAsync(coolers);
-               
-                var coolerResult = await handler.Handle(query, CancellationToken.None);
-                var typedCoolerResult = Assert.IsType<IEnumerable<Cooler>>(coolerResult, exactMatch: false);
-                
-                Assert.Equal(coolers, typedCoolerResult);
-                _coolerRepoMock.Verify(r => r.GetByType(type), Times.Once);
-                _gpuRepoMock.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
-                _cpuRepoMock.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
-                break;
-        }
+        // Assert
+        Assert.Equal(expected, result);
+        VerifyOnly(type);
     }
 
     [Fact]
@@ -84,8 +52,35 @@ public class GetByTypeQueryHandlerTest
 
         // Assert
         Assert.Null(result);
-        _gpuRepoMock.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
-        _cpuRepoMock.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
-        _coolerRepoMock.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
+        VerifyNone();
+    }
+
+    // ---------- Helpers ----------
+
+    private object? SetupRepository(string type) => type switch
+        {
+            ProductCategories.Gpu => Setup(_gpuRepo, [ProductFactory.CreateGpu()], type),
+            ProductCategories.Cpu => Setup(_cpuRepo, [ProductFactory.CreateCpu()], type),
+            ProductCategories.Cooler => Setup(_coolerRepo, [ProductFactory.CreateCooler()], type),
+            _ => null
+        };
+
+    private static List<T> Setup<T>(Mock<IReadRepository<T>> repo, List<T> data, string type) where T : class
+    {
+        repo.Setup(r => r.GetByType(type)).ReturnsAsync(data); return data;
+    }
+
+    private void VerifyOnly(string type)
+    {
+        _gpuRepo.Verify(r => r.GetByType(ProductCategories.Gpu), type == ProductCategories.Gpu ? Times.Once() : Times.Never());
+        _cpuRepo.Verify(r => r.GetByType(ProductCategories.Cpu), type == ProductCategories.Cpu ? Times.Once() : Times.Never());
+        _coolerRepo.Verify(r => r.GetByType(ProductCategories.Cooler), type == ProductCategories.Cooler ? Times.Once() : Times.Never());
+    }
+
+    private void VerifyNone()
+    {
+        _gpuRepo.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
+        _cpuRepo.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
+        _coolerRepo.Verify(r => r.GetByType(It.IsAny<string>()), Times.Never);
     }
 }
