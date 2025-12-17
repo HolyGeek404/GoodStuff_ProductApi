@@ -4,7 +4,7 @@ using GoodStuff.ProductApi.Domain.Products;
 using GoodStuff.ProductApi.Domain.Products.Models;
 using Moq;
 
-namespace GoodStuff.ProductApi.Application.Test.Queries;
+namespace GoodStuff.ProductApi.Application.Tests.Queries;
 
 public class GetByIdQueryHandlerTests
 {

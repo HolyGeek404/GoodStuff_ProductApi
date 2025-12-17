@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B65CA93F-0DA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DA737E59-1B80-4D7B-836D-9BDA03E49428}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodStuff.ProductApi.Application.Test", "GoodStuff.ProductApi.Application.Test\GoodStuff.ProductApi.Application.Test.csproj", "{89C52645-802E-4F47-AF6E-1122A6C01758}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodStuff.ProductApi.Application.Tests", "GoodStuff.ProductApi.Application.Tests\GoodStuff.ProductApi.Application.Tests.csproj", "{89C52645-802E-4F47-AF6E-1122A6C01758}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
