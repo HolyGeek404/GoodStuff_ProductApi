@@ -1,5 +1,6 @@
 using GoodStuff.ProductApi.Application.Features.Product.Queries.GetById;
 using GoodStuff.ProductApi.Application.Interfaces;
+using GoodStuff.ProductApi.Application.Services;
 using GoodStuff.ProductApi.Domain.Products;
 using GoodStuff.ProductApi.Domain.Products.Models;
 using Moq;
@@ -8,6 +9,16 @@ namespace GoodStuff.ProductApi.Application.Tests.Queries;
 
 public class GetByIdQueryHandlerTests
 {
+    private readonly Mock<IReadRepository<Gpu>> _gpuRepoMock = new();
+    private readonly Mock<IReadRepository<Cpu>> _cpuRepoMock = new();
+    private readonly Mock<IReadRepository<Cooler>> _coolerRepoMock = new();
+    private readonly IReadRepoCollection _uow;
+
+    public GetByIdQueryHandlerTests()
+    {
+        _uow = new ReadRepoCollection(_cpuRepoMock.Object, _gpuRepoMock.Object, _coolerRepoMock.Object);
+    }
+    
     [Fact]
     public async Task Handle_WhenTypeIsGpu_CallsGpuRepositoryAndReturnsResult()
     {
@@ -23,17 +34,8 @@ public class GetByIdQueryHandlerTests
             Warranty = "5 Years",
             ProducerCode = "GPU123"
         };
-        var gpuRepoMock = new Mock<IReadRepository<Gpu>>();
-        var cpuRepoMock = new Mock<IReadRepository<Cpu>>();
-        var coolerRepoMock = new Mock<IReadRepository<Cooler>>();
-        gpuRepoMock.Setup(r => r.GetById(ProductCategories.Gpu, "321")).ReturnsAsync(gpu);
-        var uowMock = new Mock<IReadRepoCollection>();
-        
-        uowMock.SetupGet(x => x.GpuRepository).Returns(gpuRepoMock.Object);
-        uowMock.SetupGet(x => x.CpuRepository).Returns(cpuRepoMock.Object);
-        uowMock.SetupGet(x => x.CoolerRepository).Returns(coolerRepoMock.Object);
-        
-        var handler = new GetByIdQueryHandler(uowMock.Object);
+        _gpuRepoMock.Setup(r => r.GetById(ProductCategories.Gpu, "321")).ReturnsAsync(gpu);
+        var handler = new GetByIdQueryHandler(_uow);
         var query = new GetByIdQuery { Type = ProductCategories.Gpu, Id = "321" };
 
         // Act
@@ -42,9 +44,9 @@ public class GetByIdQueryHandlerTests
         // Assert
         var typedResult = Assert.IsType<Gpu>(result);
         Assert.Equal(gpu, typedResult);
-        gpuRepoMock.Verify(r => r.GetById(ProductCategories.Gpu, "321"), Times.Once);
-        cpuRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-        coolerRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        _gpuRepoMock.Verify(r => r.GetById(ProductCategories.Gpu, "321"), Times.Once);
+        _cpuRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        _coolerRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -62,17 +64,8 @@ public class GetByIdQueryHandlerTests
             Warranty = "3 Years",
             ProducerCode = "CPU123"
         };
-        var gpuRepoMock = new Mock<IReadRepository<Gpu>>();
-        var cpuRepoMock = new Mock<IReadRepository<Cpu>>();
-        var coolerRepoMock = new Mock<IReadRepository<Cooler>>();
-        cpuRepoMock.Setup(r => r.GetById(ProductCategories.Cpu, "654")).ReturnsAsync(cpu);
-        
-        var uowMock = new Mock<IReadRepoCollection>();
-        uowMock.SetupGet(x => x.GpuRepository).Returns(gpuRepoMock.Object);
-        uowMock.SetupGet(x => x.CpuRepository).Returns(cpuRepoMock.Object);
-        uowMock.SetupGet(x => x.CoolerRepository).Returns(coolerRepoMock.Object);
-        
-        var handler = new GetByIdQueryHandler(uowMock.Object);
+        _cpuRepoMock.Setup(r => r.GetById(ProductCategories.Cpu, "654")).ReturnsAsync(cpu);
+        var handler = new GetByIdQueryHandler(_uow);
         var query = new GetByIdQuery { Type = ProductCategories.Cpu, Id = "654" };
 
         // Act
@@ -81,9 +74,9 @@ public class GetByIdQueryHandlerTests
         // Assert
         var typedResult = Assert.IsType<Cpu>(result);
         Assert.Equal(cpu, typedResult);
-        cpuRepoMock.Verify(r => r.GetById(ProductCategories.Cpu, "654"), Times.Once);
-        gpuRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-        coolerRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        _cpuRepoMock.Verify(r => r.GetById(ProductCategories.Cpu, "654"), Times.Once);
+        _gpuRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        _coolerRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -101,17 +94,8 @@ public class GetByIdQueryHandlerTests
             Warranty = "6 Years",
             ProducerCode = "COOL123"
         };
-        var gpuRepoMock = new Mock<IReadRepository<Gpu>>();
-        var cpuRepoMock = new Mock<IReadRepository<Cpu>>();
-        var coolerRepoMock = new Mock<IReadRepository<Cooler>>();
-        coolerRepoMock.Setup(r => r.GetById(ProductCategories.Cooler, "987")).ReturnsAsync(cooler);
-        
-        var uowMock = new Mock<IReadRepoCollection>();
-        uowMock.SetupGet(x => x.GpuRepository).Returns(gpuRepoMock.Object);
-        uowMock.SetupGet(x => x.CpuRepository).Returns(cpuRepoMock.Object);
-        uowMock.SetupGet(x => x.CoolerRepository).Returns(coolerRepoMock.Object);
-        
-        var handler = new GetByIdQueryHandler(uowMock.Object);
+        _coolerRepoMock.Setup(r => r.GetById(ProductCategories.Cooler, "987")).ReturnsAsync(cooler);
+        var handler = new GetByIdQueryHandler(_uow);
         var query = new GetByIdQuery { Type = ProductCategories.Cooler, Id = "987" };
 
         // Act
@@ -120,9 +104,9 @@ public class GetByIdQueryHandlerTests
         // Assert
         var typedResult = Assert.IsType<Cooler>(result);
         Assert.Equal(cooler, typedResult);
-        coolerRepoMock.Verify(r => r.GetById(ProductCategories.Cooler, "987"), Times.Once);
-        gpuRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-        cpuRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        _coolerRepoMock.Verify(r => r.GetById(ProductCategories.Cooler, "987"), Times.Once);
+        _gpuRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        _cpuRepoMock.Verify(r => r.GetById(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -146,8 +130,7 @@ public class GetByIdQueryHandlerTests
     public async Task Handle_WhenCancellationRequested_ThrowsOperationCanceledException()
     {
         // Arrange
-        var uowMock = new Mock<IReadRepoCollection>();
-        var handler = new GetByIdQueryHandler(uowMock.Object);
+        var handler = new GetByIdQueryHandler(_uow);
         using var cts = new CancellationTokenSource();
         await cts.CancelAsync();
         var query = new GetByIdQuery { Type = ProductCategories.Gpu, Id = "123" };
