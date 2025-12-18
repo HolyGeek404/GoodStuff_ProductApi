@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace GoodStuff.ProductApi.Domain.Products.Models;
 
-public abstract class BaseProduct
+public class BaseProduct
 {
     public required string Name { get; set; }
     public required string Team { get; set; }

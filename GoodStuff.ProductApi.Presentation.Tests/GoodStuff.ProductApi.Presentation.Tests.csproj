@@ -9,9 +9,11 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.4"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.56.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-        <PackageReference Include="Moq" Version="4.20.72" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="xunit" Version="2.9.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
           <PrivateAssets>all</PrivateAssets>
@@ -24,7 +26,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GoodStuff.ProductApi.Application\GoodStuff.ProductApi.Application.csproj" />
+      <ProjectReference Include="..\GoodStuff.ProductApi.Domain\GoodStuff.ProductApi.Domain.csproj" />
+      <ProjectReference Include="..\GoodStuff.ProductApi.Presentation\GoodStuff.ProductApi.Presentation.csproj" />
     </ItemGroup>
 
 </Project>
