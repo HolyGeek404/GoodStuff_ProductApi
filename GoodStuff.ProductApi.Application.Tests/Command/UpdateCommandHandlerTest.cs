@@ -1,11 +1,11 @@
 using System.Net;
+using System.Text.Json;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Update;
 using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Application.Tests.Helpers;
 using GoodStuff.ProductApi.Domain.Products;
 using GoodStuff.ProductApi.Domain.Products.Models;
 using Moq;
-using Newtonsoft.Json;
 
 namespace GoodStuff.ProductApi.Application.Tests.Command;
 
@@ -34,7 +34,7 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = ProductCategories.Gpu,
-            BaseProduct = JsonConvert.SerializeObject(gpu)
+            BaseProduct = JsonSerializer.SerializeToElement(gpu)
         };
 
         _gpuRepo.Setup(r => r.UpdateAsync(It.IsAny<Gpu>(), gpu.Id, gpu.Category)).ReturnsAsync(HttpStatusCode.OK);
@@ -57,7 +57,7 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = ProductCategories.Cpu,
-            BaseProduct = JsonConvert.SerializeObject(cpu)
+            BaseProduct = JsonSerializer.SerializeToElement(cpu)
         };
 
         _cpuRepo.Setup(r => r.UpdateAsync(It.IsAny<Cpu>(), cpu.Id, cpu.Category)).ReturnsAsync(HttpStatusCode.OK);
@@ -80,7 +80,7 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = ProductCategories.Cooler,
-            BaseProduct = JsonConvert.SerializeObject(cooler)
+            BaseProduct = JsonSerializer.SerializeToElement(cooler)
         };
 
         _coolerRepo.Setup(r => r.UpdateAsync(It.IsAny<Cooler>(), cooler.Id, cooler.Category)).ReturnsAsync(HttpStatusCode.OK);
@@ -102,7 +102,7 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = "unknown",
-            BaseProduct = "{}"
+            BaseProduct = new JsonElement()
         };
 
         // Act
@@ -123,7 +123,7 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = ProductCategories.Gpu,
-            BaseProduct = "{}"
+            BaseProduct = new JsonElement()
         };
 
         // Act & Assert

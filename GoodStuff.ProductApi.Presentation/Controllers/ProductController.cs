@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Create;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Delete;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Update;
@@ -76,14 +77,14 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     }
 
     [HttpPatch]
-    [Authorize(Roles = "Update")]
+    // [Authorize(Roles = "Update")]
     [Route("")]
-    public async Task<IActionResult> Update([FromBody] string product, string type)
+    public async Task<IActionResult> Update([FromBody]JsonElement product, [FromRoute]string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         Logger.LogCallingUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
 
-        if (string.IsNullOrEmpty(product))
+        if (string.IsNullOrEmpty(product.ToString()))
         {
             Logger.LogBadRequestInUpdatenameByUnknownTypeTypeProductIsEmpty(logger, nameof(Update), caller, type);
             return BadRequest("Product cannot be empty.");
