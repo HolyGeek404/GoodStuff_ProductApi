@@ -12,7 +12,6 @@ public class BaseProduct
 
     [JsonProperty("id")] public required string Id { get; set; }
 
-    public required string ProductId { get; set; }
     public required string Warranty { get; set; }
     public required string ProducerCode { get; set; }
 }

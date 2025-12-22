@@ -30,7 +30,7 @@ public class CreateCommandHandlerTests
         var command = new CreateCommand
         {
             Type = ProductCategories.Gpu,
-            Product = JsonSerializer.Serialize(gpu)
+            Product = JsonSerializer.SerializeToElement(gpu)
         };
 
         _gpuRepo.Setup(r => r.CreateAsync(It.IsAny<Gpu>(), gpu.Id, gpu.Category)).ReturnsAsync(gpu);
@@ -54,7 +54,7 @@ public class CreateCommandHandlerTests
         var command = new CreateCommand
         {
             Type = ProductCategories.Cpu,
-            Product = JsonSerializer.Serialize(cpu)
+            Product = JsonSerializer.SerializeToElement(cpu)
         };
         _cpuRepo.Setup(r => r.CreateAsync(It.IsAny<Cpu>(), cpu.Id, cpu.Category)).ReturnsAsync(cpu);
 
@@ -77,7 +77,7 @@ public class CreateCommandHandlerTests
         var command = new CreateCommand
         {
             Type = ProductCategories.Cooler,
-            Product = JsonSerializer.Serialize(cooler)
+            Product = JsonSerializer.SerializeToElement(cooler)
         };
         _coolerRepo.Setup(r => r.CreateAsync(It.IsAny<Cooler>(), cooler.Id, cooler.Category)).ReturnsAsync(cooler);
 
@@ -99,7 +99,7 @@ public class CreateCommandHandlerTests
         var command = new CreateCommand
         {
             Type = "unknown",
-            Product = "{}"
+            Product = new JsonElement()
         };
 
         // Act

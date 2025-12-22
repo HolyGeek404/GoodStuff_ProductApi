@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using GoodStuff.ProductApi.Domain.Products;
 using GoodStuff.ProductApi.Domain.Products.Models;
 using GoodStuff.ProductApi.Presentation.Tests.Helpers;
@@ -51,28 +52,50 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
         Assert.Equal(expectedName, content.Name);
     }
 
-    [Fact]
-    public async Task Update_ShouldUpdateProduct_ReturnsOk()
+    
+    [Theory]
+    [MemberData(nameof(UpdateProductData))]
+    public async Task Update_ShouldUpdateProduct_ReturnsOk(string category, string productId, JsonElement product)
     {
         // Arrange
         Authenticate("Update");
-        var newName = Guid.NewGuid().ToString();
-        var product = GetTestGpu();
-        product.Name = newName;
-        const string productId = "11";
-        StringContent jsonContent = new(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");   
+        
+        var productNode = JsonNode.Parse(product.GetRawText())!.AsObject();
+        var expectedName = Guid.NewGuid().ToString();
+        productNode["Name"] = expectedName;
+        var jsonContent = new StringContent(productNode.ToJsonString(), Encoding.UTF8, "application/json");
         
         // Act
-        var responsePatch = await _client.PatchAsync($"/Product/{ProductCategories.Gpu}",jsonContent);
-        var responseGet = await _client.GetAsync($"/Product/{ProductCategories.Gpu}/{productId}");
-        var content = await responseGet.Content.ReadFromJsonAsync<Gpu>();
+        var responsePatch = await _client.PatchAsync($"/Product/{category}",jsonContent);
+        var responseGet = await _client.GetAsync($"/Product/{category}/{productId}");
+        
+        var jsonString = await responseGet.Content.ReadAsStringAsync();
+        var rootNode = JsonNode.Parse(jsonString)!;
+        var nameResult = rootNode["name"]!.GetValue<string>();
         
         // Assert
         responsePatch.EnsureSuccessStatusCode();
         responseGet.EnsureSuccessStatusCode();
-        Assert.NotNull(content);
-        Assert.Equal(newName, content.Name);
+        Assert.Equal(expectedName, nameResult);
     }
+
+    [Fact]
+    public async Task Create_ShouldCreateProduct_ReturnsOk()
+    {
+        Authenticate("Create");
+        var product = ProductFactory.CreateTestCooler();
+        StringContent jsonContent = new(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");   
+        var responsePatch = await _client.PostAsync($"/Product/{ProductCategories.Cooler}",jsonContent);
+        
+    }
+
+    public static TheoryData<string, string, JsonElement> UpdateProductData =>
+        new()
+        {
+            { ProductCategories.Cpu, "-1", ProductFactory.CreateTestCpu() },
+            { ProductCategories.Gpu, "-2", ProductFactory.CreateTestGpu() },
+            { ProductCategories.Cooler, "-3", ProductFactory.CreateTestCooler() },
+        };
 
     
     private void Authenticate(string role = "Get")
@@ -83,34 +106,4 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
         _client.DefaultRequestHeaders.Remove("Role");
         _client.DefaultRequestHeaders.Add("Role", role);
     }
-    private static Gpu GetTestGpu() => new()
-    {
-        Id = "0a5112a8-fa42-42a0-9fd4-2ed8cd817594",
-        ProductId = "11",
-        Category = ProductCategories.Gpu,
-        Name = "TEST",
-        Price = "132",
-        Team = "TEST",
-        Manufacturer = "TEST",
-        ProductImg = "~/defaultProductImg.jpg",
-        Warranty = "TEST",
-        GpuProcessorLine = "TEST",
-        GpuProcessorName = "TEST",
-        PcieType = "TEST",
-        MemorySize = "TEST",
-        MemoryType = "TEST",
-        MemoryBus = "TEST",
-        MemoryRatio = "TEST",
-        CoreRatio = "TEST",
-        CoresNumber = "TEST",
-        CoolingType = "TEST",
-        OutputsType = "TEST",
-        SupportedLibraries = "TEST",
-        PowerConnector = "TEST",
-        RecommendedPsuPower = "TEST",
-        Length = "TEST",
-        Width = "TEST",
-        Height = "TEST",
-        ProducerCode = "Test"
-    };
 }

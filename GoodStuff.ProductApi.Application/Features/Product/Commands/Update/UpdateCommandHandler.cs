@@ -4,7 +4,6 @@ using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Domain.Products;
 using GoodStuff.ProductApi.Domain.Products.Models;
 using MediatR;
-using Newtonsoft.Json;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Commands.Update;
 

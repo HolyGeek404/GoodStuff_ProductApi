@@ -12,7 +12,6 @@ public static class ProductFactory
         Team = "AMD",
         Price = "3900",
         Id = "123",
-        ProductId = "123",
         Warranty = "5 Years",
         ProducerCode = "GPU123"
     };
@@ -24,7 +23,6 @@ public static class ProductFactory
         Team = "Intel",
         Price = "2500",
         Id = "456",
-        ProductId = "34534",
         Warranty = "3 Years",
         ProducerCode = "CPU123"
     };
@@ -36,7 +34,6 @@ public static class ProductFactory
         Team = "Noctua",
         Price = "120",
         Id = "789",
-        ProductId = "1234",
         Warranty = "6 Years",
         ProducerCode = "COOL123"
     };

@@ -77,7 +77,7 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     }
 
     [HttpPatch]
-    // [Authorize(Roles = "Update")]
+    [Authorize(Roles = "Update")]
     [Route("")]
     public async Task<IActionResult> Update([FromBody]JsonElement product, [FromRoute]string type)
     {
@@ -124,34 +124,34 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpPost]
     [Authorize(Roles = "Create")]
     [Route("")]
-    public async Task<IActionResult> Create([FromBody] CreateCommand request, string type)
+    public async Task<IActionResult> Create([FromBody]JsonElement product, string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
-        Logger.LogCallingCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, request.Type, request.Product);
+        Logger.LogCallingCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, type, product);
 
-        if (string.IsNullOrEmpty(request.Product))
+        if (string.IsNullOrEmpty(product.ToString()))
         {
-            Logger.LogBadRequestInCreatenameByCallerTypeTypeProductIsEmpty(logger, nameof(Create), caller, request.Type);
+            Logger.LogBadRequestInCreatenameByCallerTypeTypeProductIsEmpty(logger, nameof(Create), caller, type);
             return BadRequest("Product cannot be empty.");
         }
 
         try
         {
-            var result = await mediator.Send(request);
+            var result = await mediator.Send(new  CreateCommand { Product = product, Type = type });
 
-            if (result == null || string.IsNullOrEmpty(result.ProductId))
+            if (result == null || string.IsNullOrEmpty(result.Id))
             {
-                Logger.LogCreateFailedOrReturnedNullInCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, request.Type, request.Product);
+                Logger.LogCreateFailedOrReturnedNullInCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, type, product);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            Logger.LogSuccessfullyCreatedProductInCreatenameByCallerTypeTypeProductProductIdId(logger, nameof(Create), caller, request.Type, request.Product, result.ProductId);
+            Logger.LogSuccessfullyCreatedProductInCreatenameByCallerTypeTypeProductProductIdId(logger, nameof(Create), caller, type, product, result.Id);
 
-            return CreatedAtAction(nameof(GetById), new { type = result.Category, id = result.ProductId }, result);
+            return CreatedAtAction(nameof(GetById), new { type = result.Category, id = result.Id }, result);
         }
         catch (Exception ex)
         {
-            Logger.LogExceptionInCreatenameByCallerTypeTypeProductProduct(logger, ex, nameof(Create), caller, request.Type, request.Product);
+            Logger.LogExceptionInCreatenameByCallerTypeTypeProductProduct(logger, ex, nameof(Create), caller, type, product);
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }

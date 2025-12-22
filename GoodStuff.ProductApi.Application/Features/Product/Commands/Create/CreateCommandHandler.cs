@@ -1,8 +1,8 @@
+using System.Text.Json;
 using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Domain.Products;
 using GoodStuff.ProductApi.Domain.Products.Models;
 using MediatR;
-using Newtonsoft.Json;
 
 namespace GoodStuff.ProductApi.Application.Features.Product.Commands.Create;
 
@@ -14,13 +14,13 @@ public class CreateCommandHandler(IWriteRepoCollection uow) : IRequestHandler<Cr
         switch (request.Type.ToUpper())
         {
             case ProductCategories.Gpu:
-                var gpu = JsonConvert.DeserializeObject<Gpu>(request.Product);
+                var gpu = request.Product.Deserialize<Gpu>()!;
                 return await uow.GpuRepository.CreateAsync(gpu, gpu.Id, gpu.Category);
             case ProductCategories.Cpu:
-                var cpu = JsonConvert.DeserializeObject<Cpu>(request.Product);
+                var cpu = request.Product.Deserialize<Cpu>()!;
                 return await uow.CpuRepository.CreateAsync(cpu, cpu.Id, cpu.Category);
             case ProductCategories.Cooler:
-                var cooler = JsonConvert.DeserializeObject<Cooler>(request.Product);
+                var cooler = request.Product.Deserialize<Cooler>()!;
                 return await uow.CoolerRepository.CreateAsync(cooler, cooler.Id, cooler.Category);
             default:
                 return null;

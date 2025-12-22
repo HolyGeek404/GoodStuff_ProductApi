@@ -2,7 +2,6 @@ namespace GoodStuff.ProductApi.Domain.Products.Models;
 
 public class Gpu : BaseProduct
 {
-    public sealed override required string Category { get; init; } = ProductCategories.Gpu;
     public string? GpuProcessorLine { get; set; }
     public string? PcieType { get; set; }
     public string? MemorySize { get; set; }
