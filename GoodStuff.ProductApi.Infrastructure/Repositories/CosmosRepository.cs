@@ -29,7 +29,7 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient)
         var query = QueryBuilder.SelectSingleProductById(category, id);
         var iterator = _container.GetItemQueryIterator<TProduct>(query);
         var results = await iterator.ReadNextAsync();
-        return (TProduct)results.Resource.First()!;
+        return results.Resource.FirstOrDefault();
     }
 
     public async Task<BaseProduct?> CreateAsync(TProduct entity, string id, string pk)

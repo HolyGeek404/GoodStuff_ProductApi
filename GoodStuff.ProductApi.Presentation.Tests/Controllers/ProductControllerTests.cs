@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -103,28 +104,23 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
         responseDelete.EnsureSuccessStatusCode();
     }
     
-    // [Theory]
-    // [MemberData(nameof(ProductData))]
-    // public async Task CreateAndDelete_ShouldCreateProduct_ReturnsOk(string category, JsonElement product)
-    // {
-    //     // Arrange 
-    //     Authenticate("Create");
-    //     var id = new Guid("11111111-2222-3333-4444-555555555555");
-    //     
-    //     var productNode = JsonNode.Parse(product.GetRawText())!.AsObject();
-    //     productNode["id"] = id;
-    //     StringContent jsonContent = new(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");   
-    //     
-    //     // Act
-    //     var responsePatch = await _client.PostAsync($"/Product/{ProductCategories.Cooler}",jsonContent);
-    //     var responseGet = await _client.GetAsync($"/Product/{category}/{id}");
-    //     var responseDelete = await _client.DeleteAsync($"/Product/{category}?id={id}");
-    //     
-    //     // Assert
-    //     responsePatch.EnsureSuccessStatusCode();
-    //     responseGet.EnsureSuccessStatusCode();
-    //     responseDelete.EnsureSuccessStatusCode();
-    // }
+    [Fact]
+    public async Task GetById_Fails_ReturnsNotFound()
+    {
+        // Arrange 
+        Authenticate();
+        var id = new Guid("00000000-0000-0000-0000-000000000000");
+        const string category = ProductCategories.Cooler;
+        
+        // Act
+        var responseGet = await _client.GetAsync($"/Product/{category}/{id}");
+        var content = await responseGet.Content.ReadAsStringAsync();
+        
+        // Assert
+        Assert.False(responseGet.IsSuccessStatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, responseGet.StatusCode);
+        Assert.Equal($"No product found for type: {category} and id: {id}", content);
+    }
 
     
     public static TheoryData<string, JsonElement> ProductData => new() {
