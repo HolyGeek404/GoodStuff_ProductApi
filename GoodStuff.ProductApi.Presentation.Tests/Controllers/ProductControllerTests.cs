@@ -121,6 +121,23 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
         Assert.Equal(HttpStatusCode.NotFound, responseGet.StatusCode);
         Assert.Equal($"No product found for type: {category} and id: {id}", content);
     }
+    
+    [Fact]
+    public async Task GetByType_Fails_ReturnsNotFound()
+    {
+        // Arrange 
+        Authenticate();
+        const string category = "unknown";
+        
+        // Act
+        var responseGet = await _client.GetAsync($"/Product/{category}");
+        var content = await responseGet.Content.ReadAsStringAsync();
+        
+        // Assert
+        Assert.False(responseGet.IsSuccessStatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, responseGet.StatusCode);
+        Assert.Equal($"No products found for type: {category}", content);
+    }
 
     
     public static TheoryData<string, JsonElement> ProductData => new() {

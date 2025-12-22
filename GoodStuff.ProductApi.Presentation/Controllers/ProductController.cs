@@ -18,7 +18,7 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 {
     [HttpGet]
     [Authorize(Roles = "Get")]
-    public async Task<IActionResult> GetByType(string type)
+    public async Task<IActionResult> GetByType([FromRoute]string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         Logger.LogCallingGetbytypenameByUnknownTypeType(logger, nameof(GetByType), caller, type);
