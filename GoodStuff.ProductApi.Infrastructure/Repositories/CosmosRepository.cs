@@ -29,7 +29,7 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient)
         var query = QueryBuilder.SelectSingleProductById(category, id);
         var iterator = _container.GetItemQueryIterator<TProduct>(query);
         var results = await iterator.ReadNextAsync();
-        return (TProduct)results.Resource.First()!;
+        return results.Resource.FirstOrDefault();
     }
 
     public async Task<BaseProduct?> CreateAsync(TProduct entity, string id, string pk)
@@ -52,8 +52,15 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient)
     public async Task<HttpStatusCode> UpdateAsync(TProduct entity, string id, string pk)
     {
         var partitionKey = new PartitionKey(pk);
-        var result = await _container.ReplaceItemAsync(entity, id, partitionKey);
-        return result.StatusCode;
+        try
+        {
+            var result = await _container.ReplaceItemAsync(entity, id, partitionKey);
+            return result.StatusCode;
+        }
+        catch (Exception)
+        {
+            return HttpStatusCode.NotFound;
+        }
     }
 
     public async Task<HttpStatusCode> DeleteAsync(Guid id, string partitionKey)

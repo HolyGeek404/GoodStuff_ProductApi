@@ -21,7 +21,8 @@ public class TestAuthHandler(
             new Claim(ClaimTypes.Name, "TestProduct"),
             new Claim(ClaimTypes.Role, "Get"),
             new Claim(ClaimTypes.Role, "Update"),
-            new Claim(ClaimTypes.Role, "Create")
+            new Claim(ClaimTypes.Role, "Create"),
+            new Claim(ClaimTypes.Role, "Delete")
         };
 
         var identity = new ClaimsIdentity(claims, "Test");

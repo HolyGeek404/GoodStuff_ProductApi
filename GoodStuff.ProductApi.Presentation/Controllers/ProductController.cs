@@ -1,4 +1,6 @@
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Create;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Delete;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Update;
@@ -17,8 +19,7 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 {
     [HttpGet]
     [Authorize(Roles = "Get")]
-    [Route("")]
-    public async Task<IActionResult> GetByType(string type)
+    public async Task<IActionResult> GetByType([FromRoute]string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         Logger.LogCallingGetbytypenameByUnknownTypeType(logger, nameof(GetByType), caller, type);
@@ -45,7 +46,7 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpGet]
     [Authorize(Roles = "Get")]
     [Route("{id}")]
-    public async Task<IActionResult> GetById(string type, string id)
+    public async Task<IActionResult> GetById([FromRoute]string type, [FromRoute]string id)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         Logger.LogCallingGetbyidnameByUnknownTypeTypeIdId(logger, nameof(GetById), caller, type, id);
@@ -77,13 +78,12 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 
     [HttpPatch]
     [Authorize(Roles = "Update")]
-    [Route("")]
-    public async Task<IActionResult> Update([FromBody] string product, string type)
+    public async Task<IActionResult> Update([FromBody]JsonElement product, [FromRoute]string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         Logger.LogCallingUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
 
-        if (string.IsNullOrEmpty(product))
+        if (string.IsNullOrEmpty(product.ToString()))
         {
             Logger.LogBadRequestInUpdatenameByUnknownTypeTypeProductIsEmpty(logger, nameof(Update), caller, type);
             return BadRequest("Product cannot be empty.");
@@ -95,21 +95,14 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 
             switch (result)
             {
-                case HttpStatusCode.NoContent:
-                case HttpStatusCode.OK:
-                    Logger.LogSuccessfullyCalledUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
-                    return NoContent();
-
                 case HttpStatusCode.NotFound:
                     Logger.LogNoProductFoundInUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
-                    return NotFound($"No product found for type: {type} and product: {product}");
-
-                case HttpStatusCode.BadRequest:
-                    Logger.LogUpdateReturnedBadRequestInUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
-                    return BadRequest();
-
+                    var productNode = JsonNode.Parse( product.GetRawText())!.AsObject();
+                    return NotFound($"No product found to update for type: {type} and product: {productNode["id"]}");
+                case HttpStatusCode.OK or HttpStatusCode.Created or HttpStatusCode.NoContent:
+                    Logger.LogSuccessfullyCalledUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
+                    return NoContent();
                 default:
-                    Logger.LogUpdateReturnedUnexpectedStatusStatusInUpdatenameByUnknownTypeTypeProduct(logger, result, nameof(Update), caller, type, product);
                     return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -122,43 +115,41 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 
     [HttpPost]
     [Authorize(Roles = "Create")]
-    [Route("")]
-    public async Task<IActionResult> Create([FromBody] CreateCommand request, string type)
+    public async Task<IActionResult> Create([FromBody]JsonElement product, [FromRoute]string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
-        Logger.LogCallingCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, request.Type, request.Product);
+        Logger.LogCallingCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, type, product);
 
-        if (string.IsNullOrEmpty(request.Product))
+        if (string.IsNullOrEmpty(product.ToString()))
         {
-            Logger.LogBadRequestInCreatenameByCallerTypeTypeProductIsEmpty(logger, nameof(Create), caller, request.Type);
+            Logger.LogBadRequestInCreatenameByCallerTypeTypeProductIsEmpty(logger, nameof(Create), caller, type);
             return BadRequest("Product cannot be empty.");
         }
 
         try
         {
-            var result = await mediator.Send(request);
+            var result = await mediator.Send(new  CreateCommand { Product = product, Type = type });
 
-            if (result == null || string.IsNullOrEmpty(result.ProductId))
+            if (result == null || string.IsNullOrEmpty(result.id))
             {
-                Logger.LogCreateFailedOrReturnedNullInCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, request.Type, request.Product);
+                Logger.LogCreateFailedOrReturnedNullInCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, type, product);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            Logger.LogSuccessfullyCreatedProductInCreatenameByCallerTypeTypeProductProductIdId(logger, nameof(Create), caller, request.Type, request.Product, result.ProductId);
+            Logger.LogSuccessfullyCreatedProductInCreatenameByCallerTypeTypeProductProductIdId(logger, nameof(Create), caller, type, product, result.id);
 
-            return CreatedAtAction(nameof(GetById), new { type = result.Category, id = result.ProductId }, result);
+            return CreatedAtAction(nameof(GetById), new { type = result.Category, id = result.id }, result);
         }
         catch (Exception ex)
         {
-            Logger.LogExceptionInCreatenameByCallerTypeTypeProductProduct(logger, ex, nameof(Create), caller, request.Type, request.Product);
+            Logger.LogExceptionInCreatenameByCallerTypeTypeProductProduct(logger, ex, nameof(Create), caller, type, product);
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 
     [HttpDelete]
-    // [Authorize(Roles = "Delete")]
-    [Route("")]
-    public async Task<IActionResult> Delete(Guid id, string type)
+    [Authorize(Roles = "Delete")]
+    public async Task<IActionResult> Delete(Guid id, [FromRoute]string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         Logger.LogDeleteRequestReceivedByCallerIdIdTypeType(logger, caller, id, type);

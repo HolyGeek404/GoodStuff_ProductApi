@@ -1,11 +1,11 @@
 using System.Net;
+using System.Text.Json;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Update;
 using GoodStuff.ProductApi.Application.Interfaces;
 using GoodStuff.ProductApi.Application.Tests.Helpers;
 using GoodStuff.ProductApi.Domain.Products;
 using GoodStuff.ProductApi.Domain.Products.Models;
 using Moq;
-using Newtonsoft.Json;
 
 namespace GoodStuff.ProductApi.Application.Tests.Command;
 
@@ -34,17 +34,17 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = ProductCategories.Gpu,
-            BaseProduct = JsonConvert.SerializeObject(gpu)
+            BaseProduct = JsonSerializer.SerializeToElement(gpu)
         };
 
-        _gpuRepo.Setup(r => r.UpdateAsync(It.IsAny<Gpu>(), gpu.Id, gpu.Category)).ReturnsAsync(HttpStatusCode.OK);
+        _gpuRepo.Setup(r => r.UpdateAsync(It.IsAny<Gpu>(), gpu.id, gpu.Category)).ReturnsAsync(HttpStatusCode.OK);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, result);
-        _gpuRepo.Verify(r => r.UpdateAsync(It.Is<Gpu>(g => g.Id == gpu.Id), gpu.Id, gpu.Category), Times.Once);
+        _gpuRepo.Verify(r => r.UpdateAsync(It.Is<Gpu>(g => g.id == gpu.id), gpu.id, gpu.Category), Times.Once);
 
         VerifyNoOtherCalls();
     }
@@ -57,17 +57,17 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = ProductCategories.Cpu,
-            BaseProduct = JsonConvert.SerializeObject(cpu)
+            BaseProduct = JsonSerializer.SerializeToElement(cpu)
         };
 
-        _cpuRepo.Setup(r => r.UpdateAsync(It.IsAny<Cpu>(), cpu.Id, cpu.Category)).ReturnsAsync(HttpStatusCode.OK);
+        _cpuRepo.Setup(r => r.UpdateAsync(It.IsAny<Cpu>(), cpu.id, cpu.Category)).ReturnsAsync(HttpStatusCode.OK);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, result);
-        _cpuRepo.Verify(r => r.UpdateAsync(It.Is<Cpu>(c => c.Id == cpu.Id), cpu.Id, cpu.Category), Times.Once);
+        _cpuRepo.Verify(r => r.UpdateAsync(It.Is<Cpu>(c => c.id == cpu.id), cpu.id, cpu.Category), Times.Once);
 
         VerifyNoOtherCalls();
     }
@@ -80,17 +80,17 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = ProductCategories.Cooler,
-            BaseProduct = JsonConvert.SerializeObject(cooler)
+            BaseProduct = JsonSerializer.SerializeToElement(cooler)
         };
 
-        _coolerRepo.Setup(r => r.UpdateAsync(It.IsAny<Cooler>(), cooler.Id, cooler.Category)).ReturnsAsync(HttpStatusCode.OK);
+        _coolerRepo.Setup(r => r.UpdateAsync(It.IsAny<Cooler>(), cooler.id, cooler.Category)).ReturnsAsync(HttpStatusCode.OK);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, result);
-        _coolerRepo.Verify(r => r.UpdateAsync(It.Is<Cooler>(c => c.Id == cooler.Id), cooler.Id, cooler.Category), Times.Once);
+        _coolerRepo.Verify(r => r.UpdateAsync(It.Is<Cooler>(c => c.id == cooler.id), cooler.id, cooler.Category), Times.Once);
 
         VerifyNoOtherCalls();
     }
@@ -102,7 +102,7 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = "unknown",
-            BaseProduct = "{}"
+            BaseProduct = new JsonElement()
         };
 
         // Act
@@ -123,7 +123,7 @@ public class UpdateCommandHandlerTest
         var command = new UpdateCommand
         {
             Type = ProductCategories.Gpu,
-            BaseProduct = "{}"
+            BaseProduct = new JsonElement()
         };
 
         // Act & Assert

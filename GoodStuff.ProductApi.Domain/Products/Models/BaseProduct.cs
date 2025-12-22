@@ -1,5 +1,3 @@
-using Newtonsoft.Json;
-
 namespace GoodStuff.ProductApi.Domain.Products.Models;
 
 public class BaseProduct
@@ -10,9 +8,8 @@ public class BaseProduct
     public string? ProductImg { get; set; }
     public virtual required string Category { get; init; }
 
-    [JsonProperty("id")] public required string Id { get; set; }
+    public required string id { get; set; }
 
-    public required string ProductId { get; set; }
     public required string Warranty { get; set; }
     public required string ProducerCode { get; set; }
 }

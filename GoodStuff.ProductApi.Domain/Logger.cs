@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 namespace GoodStuff.ProductApi.Domain;
@@ -33,40 +34,40 @@ public static partial class Logger
    public static partial void LogExceptionInGetbyidnameByUnknownTypeTypeIdId(ILogger logger, Exception e,string getByIdName, string unknown, string type, string id);
 
     [LoggerMessage(LogLevel.Information, "Calling {updateName} by {unknown}. Type: {type}, Product: {product}")]
-   public static partial void LogCallingUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, string updateName, string unknown, string type, string product);
+   public static partial void LogCallingUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, string updateName, string unknown, string type, JsonElement product);
 
     [LoggerMessage(LogLevel.Warning, "Bad request in {updateName} by {unknown}. Type: {type}, Product is empty")]
    public static partial void LogBadRequestInUpdatenameByUnknownTypeTypeProductIsEmpty(ILogger logger, string updateName, string unknown, string type);
 
     [LoggerMessage(LogLevel.Information, "Successfully called {updateName} by {unknown}. Type: {type}, Product: {product}")]
-   public static partial void LogSuccessfullyCalledUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, string updateName, string unknown, string type, string product);
+   public static partial void LogSuccessfullyCalledUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, string updateName, string unknown, string type, JsonElement product);
 
     [LoggerMessage(LogLevel.Information, "No product found in {updateName} by {unknown}. Type: {type}, Product: {product}")]
-   public static partial void LogNoProductFoundInUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, string updateName, string unknown, string type, string product);
+   public static partial void LogNoProductFoundInUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, string updateName, string unknown, string type, JsonElement product);
 
     [LoggerMessage(LogLevel.Warning, "Update returned bad request in {updateName} by {unknown}. Type: {type}, Product: {product}")]
-   public static partial void LogUpdateReturnedBadRequestInUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, string updateName, string unknown, string type, string product);
+   public static partial void LogUpdateReturnedBadRequestInUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, string updateName, string unknown, string type, JsonElement product);
 
     [LoggerMessage(LogLevel.Warning, "Update returned unexpected status {status} in {updateName} by {unknown}. Type: {type}, Product: {product}")]
-   public static partial void LogUpdateReturnedUnexpectedStatusStatusInUpdatenameByUnknownTypeTypeProduct(ILogger logger, HttpStatusCode status, string updateName, string unknown, string type, string product);
+   public static partial void LogUpdateReturnedUnexpectedStatusStatusInUpdatenameByUnknownTypeTypeProduct(ILogger logger, HttpStatusCode status, string updateName, string unknown, string type, JsonElement product);
 
     [LoggerMessage(LogLevel.Error, "Exception in {updateName} by {unknown}. Type: {type}, Product: {product}")]
-   public static partial void LogExceptionInUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, Exception e, string updateName, string unknown, string type, string product);
+   public static partial void LogExceptionInUpdatenameByUnknownTypeTypeProductProduct(ILogger logger, Exception e, string updateName, string unknown, string type, JsonElement product);
 
     [LoggerMessage(LogLevel.Information, "Calling {createName} by {caller}. Type: {type}, Product: {product}")]
-   public static partial void LogCallingCreatenameByCallerTypeTypeProductProduct(ILogger logger, string createName, string caller, string type, string product);
+   public static partial void LogCallingCreatenameByCallerTypeTypeProductProduct(ILogger logger, string createName, string caller, string type, JsonElement product);
 
     [LoggerMessage(LogLevel.Warning, "Bad request in {createName} by {caller}. Type: {type}, Product is empty")]
    public static partial void LogBadRequestInCreatenameByCallerTypeTypeProductIsEmpty(ILogger logger, string createName, string caller, string type);
 
     [LoggerMessage(LogLevel.Warning, "Create failed or returned null in {createName} by {caller}. Type: {type}, Product: {product}")]
-   public static partial void LogCreateFailedOrReturnedNullInCreatenameByCallerTypeTypeProductProduct(ILogger logger, string createName, string caller, string type, string product);
+   public static partial void LogCreateFailedOrReturnedNullInCreatenameByCallerTypeTypeProductProduct(ILogger logger, string createName, string caller, string type, JsonElement product);
 
     [LoggerMessage(LogLevel.Information, "Successfully created product in {createName} by {caller}. Type: {type}, Product: {product}, Id: {id}")]
-   public static partial void LogSuccessfullyCreatedProductInCreatenameByCallerTypeTypeProductProductIdId(ILogger logger, string createName, string caller, string type, string product, string id);
+   public static partial void LogSuccessfullyCreatedProductInCreatenameByCallerTypeTypeProductProductIdId(ILogger logger, string createName, string caller, string type, JsonElement product, string id);
 
     [LoggerMessage(LogLevel.Error, "Exception in {createName} by {caller}. Type: {type}, Product: {product}")]
-   public static partial void LogExceptionInCreatenameByCallerTypeTypeProductProduct(ILogger logger, Exception e, string createName, string caller, string type, string product);
+   public static partial void LogExceptionInCreatenameByCallerTypeTypeProductProduct(ILogger logger, Exception e, string createName, string caller, string type, JsonElement product);
 
     [LoggerMessage(LogLevel.Information, "Delete request received by {caller}. Id: {id}, Type: {type}")]
    public static partial void LogDeleteRequestReceivedByCallerIdIdTypeType(ILogger logger, string caller, Guid id, string type);

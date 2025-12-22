@@ -30,10 +30,10 @@ public class CreateCommandHandlerTests
         var command = new CreateCommand
         {
             Type = ProductCategories.Gpu,
-            Product = JsonSerializer.Serialize(gpu)
+            Product = JsonSerializer.SerializeToElement(gpu)
         };
 
-        _gpuRepo.Setup(r => r.CreateAsync(It.IsAny<Gpu>(), gpu.Id, gpu.Category)).ReturnsAsync(gpu);
+        _gpuRepo.Setup(r => r.CreateAsync(It.IsAny<Gpu>(), gpu.id, gpu.Category)).ReturnsAsync(gpu);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -41,7 +41,7 @@ public class CreateCommandHandlerTests
         // Assert
         Assert.NotNull(result);
         Assert.IsType<Gpu>(result);
-        _gpuRepo.Verify(r => r.CreateAsync(It.IsAny<Gpu>(), gpu.Id, gpu.Category), Times.Once);
+        _gpuRepo.Verify(r => r.CreateAsync(It.IsAny<Gpu>(), gpu.id, gpu.Category), Times.Once);
 
         VerifyOnly(command.Type);
     }
@@ -54,9 +54,9 @@ public class CreateCommandHandlerTests
         var command = new CreateCommand
         {
             Type = ProductCategories.Cpu,
-            Product = JsonSerializer.Serialize(cpu)
+            Product = JsonSerializer.SerializeToElement(cpu)
         };
-        _cpuRepo.Setup(r => r.CreateAsync(It.IsAny<Cpu>(), cpu.Id, cpu.Category)).ReturnsAsync(cpu);
+        _cpuRepo.Setup(r => r.CreateAsync(It.IsAny<Cpu>(), cpu.id, cpu.Category)).ReturnsAsync(cpu);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -64,7 +64,7 @@ public class CreateCommandHandlerTests
         // Assert
         Assert.NotNull(result);
         Assert.IsType<Cpu>(result);
-        _cpuRepo.Verify(r => r.CreateAsync(It.IsAny<Cpu>(), cpu.Id, cpu.Category), Times.Once);
+        _cpuRepo.Verify(r => r.CreateAsync(It.IsAny<Cpu>(), cpu.id, cpu.Category), Times.Once);
 
         VerifyOnly(command.Type);
     }
@@ -77,9 +77,9 @@ public class CreateCommandHandlerTests
         var command = new CreateCommand
         {
             Type = ProductCategories.Cooler,
-            Product = JsonSerializer.Serialize(cooler)
+            Product = JsonSerializer.SerializeToElement(cooler)
         };
-        _coolerRepo.Setup(r => r.CreateAsync(It.IsAny<Cooler>(), cooler.Id, cooler.Category)).ReturnsAsync(cooler);
+        _coolerRepo.Setup(r => r.CreateAsync(It.IsAny<Cooler>(), cooler.id, cooler.Category)).ReturnsAsync(cooler);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -87,7 +87,7 @@ public class CreateCommandHandlerTests
         // Assert
         Assert.NotNull(result);
         Assert.IsType<Cooler>(result);
-        _coolerRepo.Verify(r => r.CreateAsync(It.IsAny<Cooler>(), cooler.Id, cooler.Category), Times.Once);
+        _coolerRepo.Verify(r => r.CreateAsync(It.IsAny<Cooler>(), cooler.id, cooler.Category), Times.Once);
 
         VerifyOnly(command.Type);
     }
@@ -99,7 +99,7 @@ public class CreateCommandHandlerTests
         var command = new CreateCommand
         {
             Type = "unknown",
-            Product = "{}"
+            Product = new JsonElement()
         };
 
         // Act
