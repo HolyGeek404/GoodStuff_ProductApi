@@ -4,11 +4,11 @@ using GoodStuff.ProductApi.Domain.Products.Models;
 
 namespace GoodStuff.ProductApi.Presentation.Tests.Helpers;
 
-public static class     ProductFactory
+public static class ProductFactory
 {
     public static JsonElement CreateTestGpu() => JsonSerializer.SerializeToElement(new Gpu
     {
-        Id = "-2",
+        id = "11111111-2222-3333-4444-555555555555",
         Category = ProductCategories.Gpu,
         Name = "TEST",
         Price = "132",
@@ -62,7 +62,7 @@ public static class     ProductFactory
         IncludedCooler = "TEST",
         Warranty = "TEST",
         ProductImg = "TEST",
-        Id = "-1",
+        id = "11111111-2222-3333-4444-555555555555",
         ProducerCode = "TEST"
     });
 
@@ -94,6 +94,6 @@ public static class     ProductFactory
         Price = "TEST",
         Manufacture = "TEST",
         Category = ProductCategories.Cooler,
-        Id = "-3"
+        id = "11111111-2222-3333-4444-555555555555"
     });
 }

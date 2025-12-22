@@ -18,7 +18,6 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 {
     [HttpGet]
     [Authorize(Roles = "Get")]
-    [Route("")]
     public async Task<IActionResult> GetByType(string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
@@ -46,7 +45,7 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     [HttpGet]
     [Authorize(Roles = "Get")]
     [Route("{id}")]
-    public async Task<IActionResult> GetById(string type, string id)
+    public async Task<IActionResult> GetById([FromRoute]string type, [FromRoute]string id)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         Logger.LogCallingGetbyidnameByUnknownTypeTypeIdId(logger, nameof(GetById), caller, type, id);
@@ -78,7 +77,6 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 
     [HttpPatch]
     [Authorize(Roles = "Update")]
-    [Route("")]
     public async Task<IActionResult> Update([FromBody]JsonElement product, [FromRoute]string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
@@ -123,8 +121,7 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 
     [HttpPost]
     [Authorize(Roles = "Create")]
-    [Route("")]
-    public async Task<IActionResult> Create([FromBody]JsonElement product, string type)
+    public async Task<IActionResult> Create([FromBody]JsonElement product, [FromRoute]string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         Logger.LogCallingCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, type, product);
@@ -139,15 +136,15 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
         {
             var result = await mediator.Send(new  CreateCommand { Product = product, Type = type });
 
-            if (result == null || string.IsNullOrEmpty(result.Id))
+            if (result == null || string.IsNullOrEmpty(result.id))
             {
                 Logger.LogCreateFailedOrReturnedNullInCreatenameByCallerTypeTypeProductProduct(logger, nameof(Create), caller, type, product);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            Logger.LogSuccessfullyCreatedProductInCreatenameByCallerTypeTypeProductProductIdId(logger, nameof(Create), caller, type, product, result.Id);
+            Logger.LogSuccessfullyCreatedProductInCreatenameByCallerTypeTypeProductProductIdId(logger, nameof(Create), caller, type, product, result.id);
 
-            return CreatedAtAction(nameof(GetById), new { type = result.Category, id = result.Id }, result);
+            return CreatedAtAction(nameof(GetById), new { type = result.Category, id = result.id }, result);
         }
         catch (Exception ex)
         {
@@ -157,9 +154,8 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
     }
 
     [HttpDelete]
-    // [Authorize(Roles = "Delete")]
-    [Route("")]
-    public async Task<IActionResult> Delete(Guid id, string type)
+    [Authorize(Roles = "Delete")]
+    public async Task<IActionResult> Delete(Guid id, [FromRoute]string type)
     {
         var caller = User.FindFirst("appid")?.Value ?? "Unknown";
         Logger.LogDeleteRequestReceivedByCallerIdIdTypeType(logger, caller, id, type);

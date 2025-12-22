@@ -16,13 +16,13 @@ public class UpdateCommandHandler(IWriteRepoCollection uow) : IRequestHandler<Up
         {
             case ProductCategories.Gpu:
                 var gpu = request.BaseProduct.Deserialize<Gpu>()!;
-                return await uow.GpuRepository.UpdateAsync(gpu, gpu.Id, gpu.Category);
+                return await uow.GpuRepository.UpdateAsync(gpu, gpu.id, gpu.Category);
             case ProductCategories.Cpu:
                 var cpu = request.BaseProduct.Deserialize<Cpu>()!;
-                return await uow.CpuRepository.UpdateAsync(cpu, cpu.Id, cpu.Category);
+                return await uow.CpuRepository.UpdateAsync(cpu, cpu.id, cpu.Category);
             case ProductCategories.Cooler:
                 var cooler = request.BaseProduct.Deserialize<Cooler>()!;
-                return await uow.CoolerRepository.UpdateAsync(cooler, cooler.Id, cooler.Category);
+                return await uow.CoolerRepository.UpdateAsync(cooler, cooler.id, cooler.Category);
             default:
                 return HttpStatusCode.BadRequest;
         }

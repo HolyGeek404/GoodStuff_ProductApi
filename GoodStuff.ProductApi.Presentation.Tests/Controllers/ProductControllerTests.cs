@@ -34,9 +34,9 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
     }
     
     [Theory]
-    [InlineData(ProductCategories.Cpu, "6", "Ryzen 9 5900X")]
-    [InlineData(ProductCategories.Gpu, "7", "Inno3D GeForce RTX 4070 Ti X3 12GB GDDR6X")]
-    [InlineData(ProductCategories.Cooler, "9", "Noctua NH-D15")]
+    [InlineData(ProductCategories.Cpu, "db7fcee5-da4f-45ec-9ad0-ce92e57fd2b2", "Ryzen 9 5900X")]
+    [InlineData(ProductCategories.Gpu, "2db725bb-cc8b-4b3f-8184-ea25a004396e", "Inno3D GeForce RTX 4070 Ti X3 12GB GDDR6X")]
+    [InlineData(ProductCategories.Cooler, "11556f4f-3d9e-4343-99bd-42941e4186fd", "Noctua NH-D15")]
     public async Task GetById_ExistingProduct_ReturnsProduct(string category, string id, string expectedName)
     {
         // Arrange
@@ -51,11 +51,10 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
         Assert.NotNull(content);
         Assert.Equal(expectedName, content.Name);
     }
-
     
     [Theory]
-    [MemberData(nameof(UpdateProductData))]
-    public async Task Update_ShouldUpdateProduct_ReturnsOk(string category, string productId, JsonElement product)
+    [MemberData(nameof(ProductData))]
+    public async Task Update_ShouldUpdateProduct_ReturnsOk(string category, JsonElement product)
     {
         // Arrange
         Authenticate("Update");
@@ -67,7 +66,7 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
         
         // Act
         var responsePatch = await _client.PatchAsync($"/Product/{category}",jsonContent);
-        var responseGet = await _client.GetAsync($"/Product/{category}/{productId}");
+        var responseGet = await _client.GetAsync($"/Product/{category}/{productNode["id"]}");
         
         var jsonString = await responseGet.Content.ReadAsStringAsync();
         var rootNode = JsonNode.Parse(jsonString)!;
@@ -79,30 +78,63 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
         Assert.Equal(expectedName, nameResult);
     }
 
-    [Fact]
-    public async Task Create_ShouldCreateProduct_ReturnsOk()
+    [Theory]
+    [MemberData(nameof(ProductData))]
+    public async Task CreateAndDelete_ShouldCreateAndDeleteProduct_ReturnsOk(string category, JsonElement product)
     {
+        // Arrange 
         Authenticate("Create");
-        var product = ProductFactory.CreateTestCooler();
-        StringContent jsonContent = new(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");   
-        var responsePatch = await _client.PostAsync($"/Product/{ProductCategories.Cooler}",jsonContent);
+        var id = new Guid("11111111-0000-3333-4444-555555555555");
         
+        var productNode = JsonNode.Parse(product.GetRawText())!.AsObject();
+        productNode["id"] = id;
+        StringContent jsonContent = new(JsonSerializer.Serialize(productNode), Encoding.UTF8, "application/json");   
+        
+        // Act
+        var responsePatch = await _client.PostAsync($"/Product/{category}",jsonContent);
+        Authenticate();
+        var responseGet = await _client.GetAsync($"/Product/{category}/{id}");
+        Authenticate("Delete");
+        var responseDelete = await _client.DeleteAsync($"/Product/{category}?id={id}");
+        
+        // Assert
+        responsePatch.EnsureSuccessStatusCode();
+        responseGet.EnsureSuccessStatusCode();
+        responseDelete.EnsureSuccessStatusCode();
     }
-
-    public static TheoryData<string, string, JsonElement> UpdateProductData =>
-        new()
-        {
-            { ProductCategories.Cpu, "-1", ProductFactory.CreateTestCpu() },
-            { ProductCategories.Gpu, "-2", ProductFactory.CreateTestGpu() },
-            { ProductCategories.Cooler, "-3", ProductFactory.CreateTestCooler() },
-        };
+    
+    // [Theory]
+    // [MemberData(nameof(ProductData))]
+    // public async Task CreateAndDelete_ShouldCreateProduct_ReturnsOk(string category, JsonElement product)
+    // {
+    //     // Arrange 
+    //     Authenticate("Create");
+    //     var id = new Guid("11111111-2222-3333-4444-555555555555");
+    //     
+    //     var productNode = JsonNode.Parse(product.GetRawText())!.AsObject();
+    //     productNode["id"] = id;
+    //     StringContent jsonContent = new(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");   
+    //     
+    //     // Act
+    //     var responsePatch = await _client.PostAsync($"/Product/{ProductCategories.Cooler}",jsonContent);
+    //     var responseGet = await _client.GetAsync($"/Product/{category}/{id}");
+    //     var responseDelete = await _client.DeleteAsync($"/Product/{category}?id={id}");
+    //     
+    //     // Assert
+    //     responsePatch.EnsureSuccessStatusCode();
+    //     responseGet.EnsureSuccessStatusCode();
+    //     responseDelete.EnsureSuccessStatusCode();
+    // }
 
     
+    public static TheoryData<string, JsonElement> ProductData => new() {
+            { ProductCategories.Cpu, ProductFactory.CreateTestCpu() },
+            { ProductCategories.Gpu, ProductFactory.CreateTestGpu() },
+            { ProductCategories.Cooler, ProductFactory.CreateTestCooler() },
+        };
     private void Authenticate(string role = "Get")
     {
-        _client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Test");
-
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
         _client.DefaultRequestHeaders.Remove("Role");
         _client.DefaultRequestHeaders.Add("Role", role);
     }

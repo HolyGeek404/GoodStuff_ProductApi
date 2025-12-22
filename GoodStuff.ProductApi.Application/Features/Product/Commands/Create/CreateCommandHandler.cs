@@ -15,13 +15,13 @@ public class CreateCommandHandler(IWriteRepoCollection uow) : IRequestHandler<Cr
         {
             case ProductCategories.Gpu:
                 var gpu = request.Product.Deserialize<Gpu>()!;
-                return await uow.GpuRepository.CreateAsync(gpu, gpu.Id, gpu.Category);
+                return await uow.GpuRepository.CreateAsync(gpu, gpu.id, gpu.Category);
             case ProductCategories.Cpu:
                 var cpu = request.Product.Deserialize<Cpu>()!;
-                return await uow.CpuRepository.CreateAsync(cpu, cpu.Id, cpu.Category);
+                return await uow.CpuRepository.CreateAsync(cpu, cpu.id, cpu.Category);
             case ProductCategories.Cooler:
                 var cooler = request.Product.Deserialize<Cooler>()!;
-                return await uow.CoolerRepository.CreateAsync(cooler, cooler.Id, cooler.Category);
+                return await uow.CoolerRepository.CreateAsync(cooler, cooler.id, cooler.Category);
             default:
                 return null;
         }

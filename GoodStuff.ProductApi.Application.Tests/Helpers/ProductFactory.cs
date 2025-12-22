@@ -11,7 +11,7 @@ public static class ProductFactory
         Category = ProductCategories.Gpu,
         Team = "AMD",
         Price = "3900",
-        Id = "123",
+        id = "123",
         Warranty = "5 Years",
         ProducerCode = "GPU123"
     };
@@ -22,7 +22,7 @@ public static class ProductFactory
         Category = ProductCategories.Cpu,
         Team = "Intel",
         Price = "2500",
-        Id = "456",
+        id = "456",
         Warranty = "3 Years",
         ProducerCode = "CPU123"
     };
@@ -33,7 +33,7 @@ public static class ProductFactory
         Category = ProductCategories.Cooler,
         Team = "Noctua",
         Price = "120",
-        Id = "789",
+        id = "789",
         Warranty = "6 Years",
         ProducerCode = "COOL123"
     };
