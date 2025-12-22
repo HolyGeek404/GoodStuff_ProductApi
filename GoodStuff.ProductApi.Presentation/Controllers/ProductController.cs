@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Create;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Delete;
 using GoodStuff.ProductApi.Application.Features.Product.Commands.Update;
@@ -94,21 +95,14 @@ public class ProductController(IMediator mediator, ILogger<ProductController> lo
 
             switch (result)
             {
-                case HttpStatusCode.NoContent:
-                case HttpStatusCode.OK:
-                    Logger.LogSuccessfullyCalledUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
-                    return NoContent();
-
                 case HttpStatusCode.NotFound:
                     Logger.LogNoProductFoundInUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
-                    return NotFound($"No product found for type: {type} and product: {product}");
-
-                case HttpStatusCode.BadRequest:
-                    Logger.LogUpdateReturnedBadRequestInUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
-                    return BadRequest();
-
+                    var productNode = JsonNode.Parse( product.GetRawText())!.AsObject();
+                    return NotFound($"No product found to update for type: {type} and product: {productNode["id"]}");
+                case HttpStatusCode.OK or HttpStatusCode.Created or HttpStatusCode.NoContent:
+                    Logger.LogSuccessfullyCalledUpdatenameByUnknownTypeTypeProductProduct(logger, nameof(Update), caller, type, product);
+                    return NoContent();
                 default:
-                    Logger.LogUpdateReturnedUnexpectedStatusStatusInUpdatenameByUnknownTypeTypeProduct(logger, result, nameof(Update), caller, type, product);
                     return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

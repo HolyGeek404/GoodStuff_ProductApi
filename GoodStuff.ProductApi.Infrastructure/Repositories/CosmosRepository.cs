@@ -52,8 +52,15 @@ public class CosmosRepository<TProduct>(CosmosClient cosmosClient)
     public async Task<HttpStatusCode> UpdateAsync(TProduct entity, string id, string pk)
     {
         var partitionKey = new PartitionKey(pk);
-        var result = await _container.ReplaceItemAsync(entity, id, partitionKey);
-        return result.StatusCode;
+        try
+        {
+            var result = await _container.ReplaceItemAsync(entity, id, partitionKey);
+            return result.StatusCode;
+        }
+        catch (Exception)
+        {
+            return HttpStatusCode.NotFound;
+        }
     }
 
     public async Task<HttpStatusCode> DeleteAsync(Guid id, string partitionKey)

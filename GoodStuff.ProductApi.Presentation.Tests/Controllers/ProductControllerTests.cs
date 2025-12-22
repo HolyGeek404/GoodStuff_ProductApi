@@ -105,7 +105,7 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
     }
     
     [Fact]
-    public async Task GetById_Fails_ReturnsNotFound()
+    public async Task GetById_WrongId_ReturnsNotFound()
     {
         // Arrange 
         Authenticate();
@@ -123,7 +123,7 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
     }
     
     [Fact]
-    public async Task GetByType_Fails_ReturnsNotFound()
+    public async Task GetByType_WrongType_ReturnsNotFound()
     {
         // Arrange 
         Authenticate();
@@ -139,6 +139,28 @@ public class ProductControllerTests(TestingWebAppFactory factory) : IClassFixtur
         Assert.Equal($"No products found for type: {category}", content);
     }
 
+    [Fact]
+    public async Task Update_WrongProduct_ReturnsBadRequest()
+    {
+        // Arrange
+        Authenticate("Update");
+        
+        var product = ProductFactory.CreateTestCooler();
+        const string category = ProductCategories.Cooler;
+        var productNode = JsonNode.Parse( product.GetRawText())!.AsObject();
+        productNode["id"] = "00000000-0000-0000-0000-000000000000";
+        
+        var jsonContent = new StringContent(productNode.ToJsonString(), Encoding.UTF8, "application/json");
+        
+        // Act
+        var responsePatch = await _client.PatchAsync($"/Product/{category}",jsonContent);
+        var content = await responsePatch.Content.ReadAsStringAsync();
+        
+        // Assert
+        Assert.False(responsePatch.IsSuccessStatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, responsePatch.StatusCode);
+        Assert.Equal($"No product found to update for type: {category} and product: {productNode["id"]}", content);
+    }
     
     public static TheoryData<string, JsonElement> ProductData => new() {
             { ProductCategories.Cpu, ProductFactory.CreateTestCpu() },
